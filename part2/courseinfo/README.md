@@ -1,0 +1,1 @@
+Courseinfo app for FSO part2
