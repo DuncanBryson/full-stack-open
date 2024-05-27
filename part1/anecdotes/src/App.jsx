@@ -17,16 +17,21 @@ const App = () => {
   ]
    
   const [selected, setSelected] = useState(0)
-  const getRandom = () => setSelected(Math.floor(Math.random() * anecdotes.length))
-  const [points, setPoints] =useState(Array(anecdotes.length).fill(0))
+  const getRandom = () => {
+    const nextAnecdote = Math.floor(Math.random() * anecdotes.length)
+    if (nextAnecdote === selected) return getRandom()
+    return setSelected(nextAnecdote)
+  
+}
+  const [votes, setVotes] = useState(Array(anecdotes.length).fill(0))
   const voteFor = () => {
-    const newPoints =[...points]
-    newPoints[selected] += 1
-    setPoints(newPoints)
+    const newVotes =[...votes]
+    newVotes[selected] += 1
+    setVotes(newVotes)
   }
   const findLargest = () => {
-    const ordered = [...points].reduce((a,b) => a>b ? a:b)
-    return points.indexOf(ordered)
+    const ordered = [...votes].reduce((a,b) => a>b ? a:b)
+    return votes.indexOf(ordered)
   }
 
 
@@ -35,13 +40,13 @@ const App = () => {
     <div>
       <h1>Anecdote of the Day</h1>
       {anecdotes[selected]}
-      <p>Has {points[selected]} votes</p>
+      <p>Has {votes[selected]} votes</p>
     </div>
     <Button clickHandler={getRandom} text="Next Anecdote"/>
     <Button clickHandler={voteFor} text="Vote"/>
     <h1>Most Voted Anecdote</h1>
     {anecdotes[findLargest()]}
-    <p>Has {points[findLargest()]} votes</p>
+    <p>Has {votes[findLargest()]} votes</p>
     </>
   )
 }
