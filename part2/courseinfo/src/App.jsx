@@ -1,3 +1,9 @@
+const Course = ({course}) => (
+  <>
+  <h2>{course.name}</h2>
+  {course.parts.map((c)=><p key={c.id}>{c.name} {c.exercises}</p>)}
+  </>
+)
 
 const App = () => {
   const course = {
