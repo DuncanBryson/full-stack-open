@@ -24,16 +24,24 @@ const App = () => {
     newPoints[selected] += 1
     setPoints(newPoints)
   }
+  const findLargest = () => {
+    const ordered = [...points].reduce((a,b) => a>b ? a:b)
+    return points.indexOf(ordered)
+  }
 
 
   return (
     <>
     <div>
+      <h1>Anecdote of the Day</h1>
       {anecdotes[selected]}
       <p>Has {points[selected]} votes</p>
     </div>
     <Button clickHandler={getRandom} text="Next Anecdote"/>
     <Button clickHandler={voteFor} text="Vote"/>
+    <h1>Most Voted Anecdote</h1>
+    {anecdotes[findLargest()]}
+    <p>Has {points[findLargest()]} votes</p>
     </>
   )
 }
