@@ -1,4 +1,33 @@
 import { useState } from 'react'
+const Filter = ({handleFilter, filter}) =>(
+  <div>
+  <label htmlFor="filter">filter shown with</label>
+  <input value={filter} onChange={handleFilter} id='filter' />
+</div>
+)
+
+const Form = ({addName, newName, handleName, newNumber, handleNumber}) => (
+  <form onSubmit={addName}>
+        <div>
+          <label htmlFor="name">Name</label>
+          <input value={newName} onChange={handleName} id='name'/>
+        </div>
+        <div>
+          <label htmlFor="number">Number</label>
+          <input value={newNumber} onChange={handleNumber} />
+        </div>
+        <div>
+          <button type="submit">add</button>
+        </div>
+      </form>
+)
+
+const Persons = ({persons, filter}) => (
+  persons.map((person)=>{
+    if(person.name.toLowerCase().includes(filter.toLowerCase()))
+    return <p key={person.name}>{person.name} {person.number}</p>
+  })
+)
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -30,29 +59,19 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>
-        <label htmlFor="filter">filter shown with</label>
-        <input value={filter} onChange={handleFilter} id='filter' />
-      </div>
+      <Filter handleFilter={handleFilter} filter = {filter} />
       <h2>Add New:</h2>
-      <form onSubmit={addName}>
-        <div>
-          <label htmlFor="name">Name</label>
-          <input value={newName} onChange={handleName} id='name'/>
-        </div>
-        <div>
-          <label htmlFor="number">Number</label>
-          <input value={newNumber} onChange={handleNumber} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <Form addName={addName}
+        newName={newName}
+        handleName={handleName}
+        newNumber={newNumber}
+        handleNumber={handleNumber}
+      />
       <h2>Numbers</h2>
-      {persons.map((person)=>{
-        if(person.name.toLowerCase().includes(filter.toLowerCase()))
-        return <p key={person.name}>{person.name} {person.number}</p>
-      })}
+      <Persons 
+        persons={persons} 
+        filter={filter}
+      />
     </div>
   )
 }
