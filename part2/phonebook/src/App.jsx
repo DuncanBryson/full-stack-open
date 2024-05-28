@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import phonebook from './services/phonebook'
 
 const Filter = ({handleFilter, filter}) =>(
   <div>
@@ -34,10 +34,9 @@ const Persons = ({persons, filter}) => (
 const App = () => {
   const [persons, setPersons] = useState([]) 
   useEffect(() => {
-    axios.get("http://localhost:3001/persons")
-      .then(response =>
-        setPersons(response.data)
-      )
+    phonebook
+      .getAll()
+      .then(initialPersons =>setPersons(initialPersons))
   },[])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
@@ -46,10 +45,11 @@ const App = () => {
     const names = persons.map((person) => person.name)
     if (names.includes(newName)){
       alert(`${newName} has already been entered`)
-    }else setPersons(persons.concat({
-      name: newName,
-      number: newNumber
-    }))
+    }else {
+      phonebook
+        .create({name:newName, number:newNumber})
+        .then (returnObject => setPersons(persons.concat(returnObject)))
+    }
     setNewName('')
     setNewNumber('')
   }
