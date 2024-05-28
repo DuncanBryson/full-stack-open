@@ -57,7 +57,7 @@ const App = () => {
         .then(returnPerson => {
           setPersons(persons.map(per => per.id !== id ? per:returnPerson ))
         })
-    }else {
+    }else if (!existingNames.includes(newName)){
       phonebook
         .create(newPerson)
         .then (returnObject => setPersons(persons.concat(returnObject)))
