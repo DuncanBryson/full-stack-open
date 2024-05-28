@@ -24,10 +24,14 @@ const Form = ({addName, newName, handleName, newNumber, handleNumber}) => (
       </form>
 )
 
-const Persons = ({persons, filter}) => (
+const Persons = ({persons, filter, handleRemove}) => (
   persons.map((person)=>{
     if(person.name.toLowerCase().includes(filter.toLowerCase()))
-    return <p key={person.name}>{person.name} {person.number}</p>
+    return (
+      <p key={person.name}>{person.name} {person.number}
+      <button value={person.id} onClick={handleRemove}>Delete</button>
+      </p>
+    )
   })
 )
 
@@ -58,6 +62,12 @@ const App = () => {
   
   const [filter, setFilter] = useState('')
   const handleFilter = (event) => setFilter(event.target.value)
+  const handleRemove = event => {
+    console.log(event.target.value)
+    phonebook
+      .remove(event.target.value)
+      .then(id => setPersons(persons.filter(p => p.id !== id)))
+  }
 
   return (
     <div>
@@ -74,6 +84,7 @@ const App = () => {
       <Persons 
         persons={persons} 
         filter={filter}
+        handleRemove={handleRemove}
       />
     </div>
   )
