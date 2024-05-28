@@ -7,7 +7,10 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const addName = (event) => {
     event.preventDefault()
-    setPersons(persons.concat({name:newName}))
+    const names = persons.map((person) => person.name)
+    if (names.includes(newName)){
+      alert(`${newName} has already been entered`)
+    }else setPersons(persons.concat({name:newName}))
     setNewName('')
   }
   const handleInput = (event) => setNewName(event.target.value)
