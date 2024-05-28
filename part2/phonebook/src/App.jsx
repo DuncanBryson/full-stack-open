@@ -16,7 +16,7 @@ const Form = ({addName, newName, handleName, newNumber, handleNumber}) => (
         </div>
         <div>
           <label htmlFor="number">Number</label>
-          <input value={newNumber} onChange={handleNumber} />
+          <input value={newNumber} onChange={handleNumber} id='number' />
         </div>
         <div>
           <button type="submit">add</button>
@@ -46,12 +46,20 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const addName = (event) => {
     event.preventDefault()
-    const names = persons.map((person) => person.name)
-    if (names.includes(newName)){
-      alert(`${newName} has already been entered`)
+    const existingNames = persons.map((person) => person.name)
+    const newPerson = {name: newName, number: newNumber}
+    if (existingNames.includes(newName) && window.confirm(
+      `${newName} is already in your phonebook. Update their number?`
+    )){
+      const id = persons.find(p => p.name === newName).id
+      phonebook
+        .update(id, newPerson)
+        .then(returnPerson => {
+          setPersons(persons.map(per => per.id !== id ? per:returnPerson ))
+        })
     }else {
       phonebook
-        .create({name:newName, number:newNumber})
+        .create(newPerson)
         .then (returnObject => setPersons(persons.concat(returnObject)))
     }
     setNewName('')
