@@ -63,10 +63,13 @@ const App = () => {
   const [filter, setFilter] = useState('')
   const handleFilter = (event) => setFilter(event.target.value)
   const handleRemove = event => {
-    console.log(event.target.value)
+    const target = event.target.value
+    if(window.confirm(
+      `Delete ${persons.find(p=>p.id === target).name}?`
+    )){
     phonebook
-      .remove(event.target.value)
-      .then(id => setPersons(persons.filter(p => p.id !== id)))
+      .remove(target)
+      .then(id => setPersons(persons.filter(p => p.id !== id)))}
   }
 
   return (
