@@ -3,10 +3,12 @@ import phonebook from './services/phonebook'
 import Filter from './components/Filter'
 import Form from './components/Form'
 import Persons from './components/Persons'
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
-
+  const [notification, setNotification] = useState("Test Notification")
+  
   useEffect(() => {
     phonebook
       .getAll()
@@ -20,6 +22,10 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification 
+      notification={notification}
+      setNotification={setNotification} 
+      />
       <Filter handleFilter={handleFilter} filter = {filter} />
       <h2>Add New:</h2>
       <Form 
