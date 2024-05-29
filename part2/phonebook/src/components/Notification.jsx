@@ -9,16 +9,18 @@ const Notification = ({notification, setNotification}) => {
     padding: 10,
     marginBottom: 10,
   }
-  if (notification.message) style.color = "red"
 
-  if (notification === '') {
+
+  if (notification === null) {
     return null
-  } else (
-      <div className='notification' style={style}>
-        {notification.message}
-      </div>
-  )
-  
+  } else {
+    if (notification.error) style.color = "red"
+      return(
+        <div className='notification' style={style}>
+          {notification.message}
+        </div>
+      )
+  }
  
 }
 
