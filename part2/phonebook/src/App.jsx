@@ -1,39 +1,8 @@
 import { useEffect, useState } from 'react'
 import phonebook from './services/phonebook'
-
-const Filter = ({handleFilter, filter}) =>(
-  <div>
-  <label htmlFor="filter">filter shown with</label>
-  <input value={filter} onChange={handleFilter} id='filter' />
-</div>
-)
-
-const Form = ({addName, newName, handleName, newNumber, handleNumber}) => (
-  <form onSubmit={addName}>
-        <div>
-          <label htmlFor="name">Name</label>
-          <input value={newName} onChange={handleName} id='name'/>
-        </div>
-        <div>
-          <label htmlFor="number">Number</label>
-          <input value={newNumber} onChange={handleNumber} id='number' />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-)
-
-const Persons = ({persons, filter, handleRemove}) => (
-  persons.map((person)=>{
-    if(person.name.toLowerCase().includes(filter.toLowerCase()))
-    return (
-      <p key={person.name}>{person.name} {person.number}
-      <button value={person.id} onClick={handleRemove}>Delete</button>
-      </p>
-    )
-  })
-)
+import Filter from './components/Filter'
+import Form from './components/Form'
+import Persons from './components/Persons'
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
