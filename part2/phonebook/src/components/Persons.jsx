@@ -1,6 +1,17 @@
 import React from "react"
+import phonebook from "../services/phonebook"
 
-const Persons = ({persons, filter, handleRemove}) => (
+const Persons = ({persons, filter, setPersons}) => {
+  const handleRemove = event => {
+    const target = event.target.value
+    if(window.confirm(
+      `Delete ${persons.find(p=>p.id === target).name}?`
+    )){
+    phonebook
+      .remove(target)
+      .then(id => setPersons(persons.filter(p => p.id !== id)))}
+  }
+  return (
   persons.map((person)=>{
     if(person.name.toLowerCase().includes(filter.toLowerCase()))
     return (
@@ -9,6 +20,7 @@ const Persons = ({persons, filter, handleRemove}) => (
       </p>
     )
   })
-)
+  )
+}
 
 export default Persons

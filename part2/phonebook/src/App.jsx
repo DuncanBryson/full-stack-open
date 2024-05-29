@@ -7,27 +7,15 @@ import Persons from './components/Persons'
 const App = () => {
   const [persons, setPersons] = useState([]) 
 
-  
   useEffect(() => {
     phonebook
       .getAll()
       .then(initialPersons =>setPersons(initialPersons))
   },[])
 
-
-  
-  
   const [filter, setFilter] = useState('')
   const handleFilter = (event) => setFilter(event.target.value)
-  const handleRemove = event => {
-    const target = event.target.value
-    if(window.confirm(
-      `Delete ${persons.find(p=>p.id === target).name}?`
-    )){
-    phonebook
-      .remove(target)
-      .then(id => setPersons(persons.filter(p => p.id !== id)))}
-  }
+ 
 
   return (
     <div>
@@ -42,7 +30,7 @@ const App = () => {
       <Persons 
         persons={persons} 
         filter={filter}
-        handleRemove={handleRemove}
+        setPersons={setPersons}
       />
     </div>
   )
