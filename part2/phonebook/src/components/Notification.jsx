@@ -9,24 +9,16 @@ const Notification = ({notification, setNotification}) => {
     padding: 10,
     marginBottom: 10,
   }
-  if (notification.includes("Error")) style.color = "red"
+  if (notification.message) style.color = "red"
 
   if (notification === '') {
     return null
-  } else {
-    useEffect(()=>{
-      const timeout = setTimeout(()=>{
-        setNotification('')
-      },5000)
-      return () => clearTimeout(timeout)
-    })
-
-    return (
+  } else (
       <div className='notification' style={style}>
-        {notification}
+        {notification.message}
       </div>
-    )
-  }
+  )
+  
  
 }
 
