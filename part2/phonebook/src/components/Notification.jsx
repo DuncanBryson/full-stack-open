@@ -9,6 +9,7 @@ const Notification = ({notification, setNotification}) => {
     padding: 10,
     marginBottom: 10,
   }
+  if (notification.includes("Error")) style.color = "red"
 
   if (notification === '') {
     return null

@@ -1,5 +1,6 @@
 import {useState} from "react"
 import phonebook from "../services/phonebook"
+import Persons from "./Persons"
 
 const Form = ({persons, setPersons, setNotification}) => {
   const handleName = (event) => setNewName(event.target.value)
@@ -21,6 +22,7 @@ const Form = ({persons, setPersons, setNotification}) => {
           setNotification(`${newName} successfully updated`)
           setPersons(persons.map(per => per.id !== id ? per:returnPerson ))
         })
+        .catch(error => setNotification(`Error: ${newName} has been deleted`))
     }else if (!existingNames.includes(newName)){
       phonebook
         .create(newPerson)
