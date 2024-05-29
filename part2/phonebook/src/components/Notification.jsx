@@ -14,14 +14,14 @@ const Notification = ({notification, setNotification}) => {
     return null
   } else {
     useEffect(()=>{
-      setTimeout(()=>{
+      const timeout = setTimeout(()=>{
         setNotification('')
       },5000)
+      return () => clearTimeout(timeout)
     })
 
     return (
-      <div className='notification'
-      style={style}>
+      <div className='notification' style={style}>
         {notification}
       </div>
     )

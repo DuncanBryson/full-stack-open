@@ -1,7 +1,7 @@
 import {useState} from "react"
 import phonebook from "../services/phonebook"
 
-const Form = ({persons, setPersons}) => {
+const Form = ({persons, setPersons, setNotification}) => {
   const handleName = (event) => setNewName(event.target.value)
   const handleNumber = (event) => setNewNumber(event.target.value)
   const [newName, setNewName] = useState('')
@@ -18,12 +18,15 @@ const Form = ({persons, setPersons}) => {
       phonebook
         .update(id, newPerson)
         .then(returnPerson => {
+          setNotification(`${newName} successfully updated`)
           setPersons(persons.map(per => per.id !== id ? per:returnPerson ))
         })
     }else if (!existingNames.includes(newName)){
       phonebook
         .create(newPerson)
-        .then (returnObject => setPersons(persons.concat(returnObject)))
+        .then (returnObject => {
+          setNotification(`${newName} successfully added`)
+          setPersons(persons.concat(returnObject))})
     }
     setNewName('')
     setNewNumber('')

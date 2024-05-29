@@ -7,12 +7,15 @@ import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
-  const [notification, setNotification] = useState("Test Notification")
+  const [notification, setNotification] = useState("Loading Phonebook")
   
   useEffect(() => {
     phonebook
       .getAll()
-      .then(initialPersons =>setPersons(initialPersons))
+      .then(initialPersons => {
+        setPersons(initialPersons)
+        setNotification("Phonebook Loaded")
+      })
   },[])
 
   const [filter, setFilter] = useState('')
@@ -31,12 +34,14 @@ const App = () => {
       <Form 
       persons={persons}
       setPersons={setPersons}
+      setNotification={setNotification}
        />
       <h2>Numbers</h2>
       <Persons 
         persons={persons} 
         filter={filter}
         setPersons={setPersons}
+        setNotification={setNotification}
       />
     </div>
   )
