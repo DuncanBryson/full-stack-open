@@ -1,7 +1,7 @@
 import React from "react"
 import phonebook from "../services/phonebook"
 
-const Persons = ({persons, filter, setPersons, setNotification}) => {
+const Persons = ({persons, filter, setPersons, showNotification}) => {
   const handleRemove = event => {
     const target = event.target.value
     const name = persons.find(p=>p.id === target).name
@@ -12,7 +12,7 @@ const Persons = ({persons, filter, setPersons, setNotification}) => {
       .remove(target)
       .then(id => {
         setPersons(persons.filter(p => p.id !== id))
-        setNotification(`${name} successfully deleted`)
+        showNotification(`${name} successfully deleted`)
     })}
   }
   return (
