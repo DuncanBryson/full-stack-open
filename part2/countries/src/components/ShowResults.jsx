@@ -1,11 +1,19 @@
-import React from "react"
+import React, { useState } from "react"
 import ShowCountry from "./ShowCountry"
+import Button from "./Button"
 
-const ShowResults = ({filteredCountries, countries}) => {
+const ShowResults = ({filteredCountries, countries, countrySelected, setCountrySelected}) => {
   const results = filteredCountries.length
+
+  if(countrySelected) return ShowCountry(countrySelected)
   if(results >1 && results <=10) return(
       filteredCountries.map(c => {
-        return (<p key={c.ccn3}>{c.name.common}</p>)
+        return (
+        <p key={c.cca2}>{c.name.common}
+        <Button country={c}
+        setCountrySelected={setCountrySelected}/>
+        </p>
+        )
       })
    
   ) 
@@ -21,6 +29,7 @@ const ShowResults = ({filteredCountries, countries}) => {
   if (results === 1) return(
     ShowCountry(filteredCountries[0])
   )
+  
 
 }
 export default ShowResults
