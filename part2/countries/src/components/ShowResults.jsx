@@ -4,8 +4,9 @@ import Button from "./Button"
 
 const ShowResults = ({filteredCountries, countries, countrySelected, setCountrySelected}) => {
   const results = filteredCountries.length
-
+  //country selected with button 
   if(countrySelected) return ShowCountry(countrySelected)
+  //search has acceptable number of results
   if(results >1 && results <=10) return(
       filteredCountries.map(c => {
         return (
@@ -26,6 +27,7 @@ const ShowResults = ({filteredCountries, countries, countrySelected, setCountryS
   if (results === 0) return (
     <p>Please broaden your search</p>
   )
+  // only one resultm show detailed
   if (results === 1) return(
     ShowCountry(filteredCountries[0])
   )

@@ -6,15 +6,17 @@ const Weather = ({capital, cca3}) => {
   const [weatherResult,setWeatherResult] = useState(null)
 
   useEffect(() =>{
+    // check if country selected before querying api
     if(!capital) return null
     const params = {
       q : `${capital},${cca3}`,
       units : "metric",
       appid : api_key
     }
+    // get weather from open weather api
     axios.get("https://api.openweathermap.org/data/2.5/weather?",{params})
-    .then(result => setWeatherResult(result.data)
-  )}, [capital])
+    .then(result => setWeatherResult(result.data))
+  }, [capital])
 
 
 
