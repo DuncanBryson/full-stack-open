@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import ShowCountries from './components/ShowCountries'
+import ShowResults from './components/ShowResults'
+
 
 function App() {
   const [searchQuery, setSearchQuery] = useState('')
@@ -29,7 +30,7 @@ function App() {
     <>
       <label htmlFor="search">Find Countries:</label>
       <input type="text" id='search' value={searchQuery} onChange={handleSearch}/>
-      <ShowCountries 
+      <ShowResults 
       countries={countries}
       filteredCountries={filteredCountries}
       />

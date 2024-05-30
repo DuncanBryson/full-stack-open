@@ -1,8 +1,9 @@
 import React from "react"
+import ShowCountry from "./ShowCountry"
 
-const ShowCountries = ({filteredCountries, countries}) => {
+const ShowResults = ({filteredCountries, countries}) => {
   const results = filteredCountries.length
-  if(results >=1 && results <=10) return(
+  if(results >1 && results <=10) return(
       filteredCountries.map(c => {
         return (<p key={c.ccn3}>{c.name.common}</p>)
       })
@@ -17,6 +18,9 @@ const ShowCountries = ({filteredCountries, countries}) => {
   if (results === 0) return (
     <p>Please broaden your search</p>
   )
+  if (results === 1) return(
+    ShowCountry(filteredCountries[0])
+  )
 
 }
-export default ShowCountries
+export default ShowResults
