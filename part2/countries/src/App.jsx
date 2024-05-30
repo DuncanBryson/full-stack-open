@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import ShowResults from './components/ShowResults'
-import ShowCountry from './components/ShowCountry'
-
 
 function App() {
   const [searchQuery, setSearchQuery] = useState('')
