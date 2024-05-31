@@ -50,6 +50,35 @@ app.delete('/api/persons/:id', (req,res) => {
   res.status(204).end()
 })
 
+app.post('/api/persons', (req,res) => {
+  const content = req.body
+  if(!content.name || !content.number) {
+    res.status(400).json({
+      error: "Missing name or number"
+    })
+  } else if (persons.find(p => p.name ===content.name)){
+    res.status(400).json({
+      error: "Name is not unique"
+    })
+  }else {
+    const person =({
+      name: content.name,
+      number: content.number,
+      id: makeID()
+    })
+    persons.push(person)
+    res.json(person)
+  }
+  
+})
+
+const makeID = () => {
+  let id = Math.floor(Math.random()*10000)
+  if(persons.find(p => p.id === id)){
+    return makeID()
+  } else return id
+}
+
 const PORT = 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
