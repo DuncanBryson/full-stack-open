@@ -4,7 +4,7 @@ import phonebook from "../services/phonebook"
 const Persons = ({persons, filter, setPersons, showNotification}) => {
   const handleRemove = event => {
     const target = event.target.value
-    const name = persons.find(p=>p.id === target).name
+    const name = persons.find(p=>p.id == target).name
     if(window.confirm(
       `Delete ${name}?`
     )){
