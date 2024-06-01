@@ -1,10 +1,16 @@
+require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
 const app = express()
+const Person = require('./models/person')
+
+
 app.use(cors())
 app.use(express.json())
 app.use(express.static('dist'))
+// Provides helpful console logs for debugging
+// Printing content not good practice but useful for this exercise
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :content', {
     skip: (req) => req.method !== "POST"
 }))
@@ -17,7 +23,7 @@ app.use(morgan('tiny', {
 }))
 
 
-
+// remove once all functions migrated to Mongo
 let phonebook = [
   { 
     "id": 1,
@@ -42,7 +48,9 @@ let phonebook = [
 ]
 
 app.get('/api/phonebook', (req, res) => {
-  res.json(phonebook)
+  Person.find({}).then(phonebook =>{
+    res.json(phonebook)
+  })
 })
 
 app.get('/info', (req,res) => {
@@ -94,7 +102,7 @@ const makeID = () => {
   } else return id
 }
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
