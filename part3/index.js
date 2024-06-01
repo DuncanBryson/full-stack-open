@@ -56,7 +56,7 @@ app.get('/api/phonebook', (req, res) => {
 // Still relies on hardcoded phonebook
 app.get('/info', (req,res) => {
   res.send(`
-    <p>Phonebook has info for ${phonebook.length} people</p>
+    <p>Phonebook has info for ${Person.length} people</p>
     <p>${new Date}</p>
   `)
 })
