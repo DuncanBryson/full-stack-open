@@ -53,6 +53,7 @@ app.get('/api/phonebook', (req, res) => {
   })
 })
 
+// Still relies on hardcoded phonebook
 app.get('/info', (req,res) => {
   res.send(`
     <p>Phonebook has info for ${phonebook.length} people</p>
@@ -61,10 +62,9 @@ app.get('/info', (req,res) => {
 })
 
 app.get('/api/phonebook/:id', (req,res) => {
-  const id = Number(req.params.id)
-  const person = phonebook.find(p =>p.id === id)
-  if(person) res.json(person)
-  else res.status(404).end()
+  Person.findById(req.params.id).then(person =>{
+    res.json(person)
+  })
 })
 
 app.delete('/api/phonebook/:id', (req,res) => {
@@ -95,6 +95,7 @@ app.post('/api/phonebook', (req,res) => {
   
 })
 
+// Remove once fully migrated to Mondo
 const makeID = () => {
   let id = Math.floor(Math.random()*10000)
   if(phonebook.find(p => p.id === id)){
