@@ -79,6 +79,10 @@ app.post('/api/phonebook', (req,res) => {
     })
   
 })
+const unknownEndpoint = (req, res) => {
+  res.status(404).send({ error: 'unknown endpoint' })
+}
+app.use(unknownEndpoint)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
