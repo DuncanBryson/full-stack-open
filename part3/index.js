@@ -95,6 +95,9 @@ app.put("/api/phonebook/:id", (req, res, next) => {
     { new: true, runValidators: true, context: "query" }
   )
     .then((updatedPerson) => {
+      if (!updatedPerson) {
+        return res.status(404).json({ error: "Person has been removed" });
+      }
       res.json(updatedPerson);
     })
     .catch((err) => next(err));
