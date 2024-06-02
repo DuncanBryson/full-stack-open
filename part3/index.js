@@ -4,8 +4,6 @@ const morgan = require('morgan')
 const cors = require('cors')
 const app = express()
 const Person = require('./models/person')
-const { log } = require('console')
-
 
 app.use(cors())
 app.use(express.json())
@@ -55,7 +53,7 @@ app.delete('/api/phonebook/:id', (req,res,next) => {
 })
 
 
-app.post('/api/phonebook', (req,res) => {
+app.post('/api/phonebook', (req,res,next) => {
   const content = req.body
   if(!content.name || !content.number) {
     res.status(400).json({
@@ -78,17 +76,18 @@ app.post('/api/phonebook', (req,res) => {
         person.save().then(savedPerson => {
           res.json(savedPerson)
         })
+          .catch(err => next(err))
       }
     })
+    .catch(err=>next(err))
   
 })
 
 app.put('/api/phonebook/:id',(req,res,next) => {
-  const person = {
-    name: req.body.name,
-    number: req.body.number
-  } 
-  Person.findByIdAndUpdate(req.params.id, person, {new: true})
+  const { name, number } = req.body
+  Person.findByIdAndUpdate(req.params.id,
+    {name, number},
+    {new: true, runValidators: true, context: 'query'})
     .then(updatedPerson =>{
       res.json(updatedPerson)
     })
@@ -109,7 +108,9 @@ const errorHandler = (err, req, res, next) => {
   console.error(err.message)
 
   if(err.name === 'CastError') {
-    return res.status(400).send({err: 'Malformatted ID'})
+    return res.status(400).send({error: 'Malformatted ID'})
+  }else if (err.name === 'ValidationError'){
+    return res.status(400).send({error: err.message})
   }
 
   next(err)
