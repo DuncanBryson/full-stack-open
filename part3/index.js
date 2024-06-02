@@ -32,10 +32,13 @@ app.get('/api/phonebook', (req, res) => {
 })
 
 app.get('/info', (req,res) => {
-  res.send(`
-    <p>Phonebook has info for ${Person.length} people</p>
+  Person.find({}).then(phonebook=>{
+    res.send(`
+    <p>Phonebook has info for ${phonebook.length} people</p>
     <p>${new Date}</p>
   `)
+  })
+
 })
 
 app.get('/api/phonebook/:id', (req,res, next) => {
