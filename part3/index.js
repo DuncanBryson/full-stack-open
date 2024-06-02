@@ -42,10 +42,9 @@ app.get('/api/phonebook/:id', (req,res, next) => {
   Person.findById(req.params.id).then(person =>{
     res.json(person)
   })
-    .catch(error => next(error))
+    .catch(err => next(err))
 })
 
-// still to update with mongo
 app.delete('/api/phonebook/:id', (req,res,next) => {
   Person.findByIdAndDelete(req.params.id)
     .then(res.status(204).end())
@@ -80,6 +79,19 @@ app.post('/api/phonebook', (req,res) => {
     })
   
 })
+
+app.put('/api/phonebook/:id',(req,res,next) => {
+  const person = {
+    name: req.body.name,
+    number: req.body.number
+  } 
+  Person.findByIdAndUpdate(req.params.id, person, {new: true})
+    .then(updatedPerson =>{
+      res.json(updatedPerson)
+    })
+    .catch(err => next(err))
+})
+
 const unknownEndpoint = (req, res) => {
   res.status(404).send({ error: 'unknown endpoint' })
 }
