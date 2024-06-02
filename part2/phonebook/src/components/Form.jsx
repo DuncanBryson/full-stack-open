@@ -22,13 +22,14 @@ const Form = ({persons, setPersons, showNotification}) => {
           showNotification(`${newName} successfully updated`)
           setPersons(persons.map(per => per.id !== id ? per:returnPerson ))
         })
-        .catch(error => showNotification(`Error: ${newName} has been deleted`, true))
+        .catch(err => showNotification(err.response.data.error, true))
     }else if (!existingNames.includes(newName)){
       phonebook
         .create(newPerson)
         .then (returnObject => {
           showNotification(`${newName} successfully added`)
           setPersons(persons.concat(returnObject))})
+        .catch(err=> showNotification(err.response.data.error, true))
     }
     setNewName('')
     setNewNumber('')
