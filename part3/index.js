@@ -38,17 +38,18 @@ app.get('/info', (req,res) => {
   `)
 })
 
-app.get('/api/phonebook/:id', (req,res) => {
+app.get('/api/phonebook/:id', (req,res, next) => {
   Person.findById(req.params.id).then(person =>{
     res.json(person)
   })
+    .catch(error => next(error))
 })
 
 // still to update with mongo
-app.delete('/api/phonebook/:id', (req,res) => {
+app.delete('/api/phonebook/:id', (req,res,next) => {
   Person.findByIdAndDelete(req.params.id)
     .then(res.status(204).end())
-    .catch(err  =>console.log(err))
+    .catch(error => next(error))
 })
 
 
@@ -88,3 +89,15 @@ const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
+
+const errorHandler = (err, req, res, next) => {
+  console.error(err.message)
+
+  if(err.name === 'CastError') {
+    return res.status(400).send({err: 'Malformatted ID'})
+  }
+
+  next(err)
+}
+
+app.use(errorHandler)
