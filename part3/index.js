@@ -46,9 +46,9 @@ app.get('/api/phonebook/:id', (req,res) => {
 
 // still to update with mongo
 app.delete('/api/phonebook/:id', (req,res) => {
-  const id = Number(req.params.id)
-  phonebook = phonebook.filter(p=> p.id !==id)
-  res.status(204).end()
+  Person.findByIdAndDelete(req.params.id)
+    .then(res.status(204).end())
+    .catch(err  =>console.log(err))
 })
 
 
