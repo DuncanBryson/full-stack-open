@@ -29,7 +29,17 @@ describe("favourite blog", () => {
   test("Sorts multiple blogs", () => {
     const result = listHelper.favoriteBlog(blogs);
     assert.deepStrictEqual(result, blogs[2]);
-    console.log(blogs[2]);
+  });
+});
+
+describe("Most Blogs", () => {
+  test("One blog", () => {
+    const result = listHelper.mostBlogs(oneBlog);
+    assert.deepStrictEqual(result, { author: "Edsger W. Dijkstra", blogs: 1 });
+  });
+  test("Many blogs", () => {
+    const result = listHelper.mostBlogs(blogs);
+    assert.deepStrictEqual(result, { author: "Robert C. Martin", blogs: 3 });
   });
 });
 
