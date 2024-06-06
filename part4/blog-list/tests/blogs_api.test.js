@@ -34,7 +34,7 @@ test("Post adds new blog", async () => {
   const newBlog = {
     title: "Why you need TDD",
     author: "NPM Test",
-    URL: "fullstackopen.com",
+    url: "fullstackopen.com",
     likes: 2346,
   };
   await api.post("/api/blogs").send(newBlog).expect(201);
@@ -46,12 +46,27 @@ test("Missing likes defaults to 0", async () => {
   const newBlog = {
     title: "Why you need TDD",
     author: "NPM Test",
-    URL: "fullstackopen.com",
+    url: "fullstackopen.com",
   };
   const response = await api.post("/api/blogs").send(newBlog);
   assert.strictEqual(response.body.likes, 0);
 });
 
+test("Missing title gives 400", async () => {
+  const newBlog = {
+    author: "NPM Test",
+    url: "fullstackopen.com",
+  };
+  await api.post("/api/blogs").send(newBlog).expect(400);
+});
+
+test("Missing URL gives 400", async () => {
+  const newBlog = {
+    title: "Why you need TDD",
+    author: "NPM Test",
+  };
+  await api.post("/api/blogs").send(newBlog).expect(400);
+});
 after(async () => {
   await mongoose.connection.close();
 });
