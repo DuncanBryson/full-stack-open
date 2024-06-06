@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 const logger = require("./utils/logger");
 const blogRouter = require("./controllers/blogs");
 
-const mongoUrl = process.env.MONGODB_URI;
+const mongoUrl = config.MONGODB_URI;
 mongoose
   .connect(mongoUrl)
   .then(() => {
