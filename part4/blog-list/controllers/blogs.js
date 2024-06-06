@@ -32,5 +32,19 @@ blogRouter.post("/", async (request, response) => {
     response.status(201).json(savedBlog);
   }
 });
+
+blogRouter.put("/:id", async (request, response) => {
+  const { title, author, url, likes } = request.body;
+  const updatedBlog = { title, author, url, likes };
+  await Blog.findByIdAndUpdate(request.params.id, updatedBlog, {
+    new: true,
+    runValidators: true,
+    context: "query",
+  });
+
+  if (!updatedBlog) {
+    return response.status(404).json({ error: "Blog not found" }).end();
+  } else response.status(200).json(updatedBlog);
+});
 blogRouter.use(middleware.errorHandler);
 module.exports = blogRouter;
