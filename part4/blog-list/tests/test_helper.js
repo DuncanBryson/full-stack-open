@@ -21,4 +21,16 @@ const blogsInDb = async () => {
   return blogs.map((blog) => blog.toJSON());
 };
 
-module.exports = { initialBlogs, blogsInDb };
+const getVoidID = async () => {
+  const tempBlog = new Blog({
+    title: "Existence is pain",
+    author: "Short-lived",
+    url: "...",
+  });
+  await tempBlog.save();
+  await tempBlog.deleteOne();
+
+  return tempBlog.id;
+};
+
+module.exports = { initialBlogs, blogsInDb, getVoidID };
