@@ -61,7 +61,7 @@ describe("User generation", () => {
     assert.deepStrictEqual(users.length, helper.initialUsers.length);
     assert(result.body.error.includes("`username` is required"));
   });
-  test("No pasword", async () => {
+  test("No password", async () => {
     const user = {
       username: "Eunique",
       name: "Steve",
