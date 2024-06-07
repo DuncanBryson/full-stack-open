@@ -5,8 +5,6 @@ const middleware = require("../utils/middleware");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
-blogRouter.use(middleware.tokenExtractor);
-
 blogRouter.get("/", async (request, response) => {
   const blogs = await Blog.find({}).populate("user", { username: 1, name: 1 });
   response.json(blogs);
@@ -22,6 +20,14 @@ blogRouter.get("/:id", async (request, response) => {
 });
 
 blogRouter.delete("/:id", async (request, response) => {
+  const verifiedToken = jwt.verify(request.token, process.env.SECRET);
+  const user = await User.findById(verifiedToken.id);
+  const blog = await Blog.findById(request.params.id);
+  if (blog.user.toString() !== user._id.toString()) {
+    return response
+      .status(401)
+      .json({ error: "Token does not match blog poster" });
+  }
   await Blog.findByIdAndDelete(request.params.id);
   response.status(204).end();
 });
