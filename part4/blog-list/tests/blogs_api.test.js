@@ -6,7 +6,6 @@ const app = require("../app");
 const mongoose = require("mongoose");
 const api = supertest(app);
 const helper = require("./test_helper");
-const { log } = require("console");
 
 beforeEach(async () => {
   await Blog.deleteMany({});

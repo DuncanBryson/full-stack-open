@@ -1,5 +1,5 @@
-const { initial } = require("lodash");
 const Blog = require("../models/blog");
+const User = require("../models/user");
 
 const initialBlogs = [
   {
@@ -33,4 +33,30 @@ const getVoidID = async () => {
   return tempBlog.id;
 };
 
-module.exports = { initialBlogs, blogsInDb, getVoidID };
+const initialUsers = [
+  {
+    username: "Duncan",
+    name: "Duncan",
+    passwordHash:
+      "$2b$10$zNIcPZGVWL/wOIOsia5qiOSdw93lfznuhjPZs9F8YIqxyXZ0x4oAS",
+  },
+  {
+    username: "Dave",
+    name: "Dave",
+    passwordHash:
+      "$2b$10$Br4k/7wgC3uVr8pAXLsrye2H4aVxceVKQX0fVp6oZn11o283Aq1VO",
+  },
+];
+
+const usersInDB = async () => {
+  const users = await User.find({});
+  return users.map((u) => u.toJSON());
+};
+
+module.exports = {
+  initialBlogs,
+  blogsInDb,
+  getVoidID,
+  initialUsers,
+  usersInDB,
+};
