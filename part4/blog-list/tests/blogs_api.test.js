@@ -6,11 +6,26 @@ const app = require("../app");
 const mongoose = require("mongoose");
 const api = supertest(app);
 const helper = require("./test_helper");
+require("dotenv").config();
+const jwt = require("jsonwebtoken");
+const User = require("../models/user");
+
+let token;
 
 beforeEach(async () => {
   await Blog.deleteMany({});
   await Blog.insertMany(helper.initialBlogs);
+  await User.deleteMany({});
+  const users = await User.insertMany(helper.initialUsers);
+  token =
+    "Bearer " +
+    jwt.sign(
+      { username: users[0].username, id: users[0]._id },
+      process.env.SECRET,
+      { expiresIn: 10 * 60 }
+    );
 });
+
 describe("Getting Blogs", () => {
   test("blogs are JSON", async () => {
     const response = await api
@@ -39,7 +54,11 @@ describe("Posting blogs", () => {
       url: "fullstackopen.com",
       likes: 2346,
     };
-    await api.post("/api/blogs").send(newBlog).expect(201);
+    await api
+      .post("/api/blogs")
+      .set("Authorization", token)
+      .send(newBlog)
+      .expect(201);
     const updatedBlogs = await helper.blogsInDb();
     assert.strictEqual(updatedBlogs.length, helper.initialBlogs.length + 1);
   });
@@ -50,7 +69,10 @@ describe("Posting blogs", () => {
       author: "NPM Test",
       url: "fullstackopen.com",
     };
-    const response = await api.post("/api/blogs").send(newBlog);
+    const response = await api
+      .post("/api/blogs")
+      .set("Authorization", token)
+      .send(newBlog);
     assert.strictEqual(response.body.likes, 0);
   });
 
@@ -59,7 +81,11 @@ describe("Posting blogs", () => {
       author: "NPM Test",
       url: "fullstackopen.com",
     };
-    await api.post("/api/blogs").send(newBlog).expect(400);
+    await api
+      .post("/api/blogs")
+      .send(newBlog)
+      .set("Authorization", token)
+      .expect(400);
   });
 
   test("Missing URL gives 400", async () => {
@@ -67,21 +93,48 @@ describe("Posting blogs", () => {
       title: "Why you need TDD",
       author: "NPM Test",
     };
-    await api.post("/api/blogs").send(newBlog).expect(400);
+    await api
+      .post("/api/blogs")
+      .send(newBlog)
+      .set("Authorization", token)
+      .expect(400);
+  });
+  test("Posting blog fails with no token", async () => {
+    const newBlog = {
+      title: "Why you need TDD",
+      author: "NPM Test",
+      url: "fullstackopen.com",
+      likes: 2346,
+    };
+    await api.post("/api/blogs").send(newBlog).expect(401);
   });
 });
 
 describe("Deleting blogs", () => {
   test("Delete non-existing blog", async () => {
     const id = await helper.getVoidID();
-    await api.delete(`/api/blogs/${id}`).expect(204);
+    await api
+      .delete(`/api/blogs/${id}`)
+      .set("Authorization", token)
+      .expect(204);
   });
   test("Delete blog working", async () => {
     const initialBlogs = await helper.blogsInDb();
-    const id = initialBlogs[0].id;
-    await api.delete(`/api/blogs/${id}`).expect(204);
+    const newBlogResponse = await api
+      .post("/api/blogs")
+      .set("Authorization", token)
+      .send({
+        author: "delete",
+        title: "delete",
+        url: "delete",
+      });
+    const newBlog = newBlogResponse.body;
+    await api
+      .delete(`/api/blogs/${newBlog.id}`)
+      .set("Authorization", token)
+      .expect(204);
     const finalBlogs = await helper.blogsInDb();
-    assert.strictEqual(finalBlogs.length, initialBlogs.length - 1);
+    assert.strictEqual(finalBlogs.length, initialBlogs.length);
   });
 });
 

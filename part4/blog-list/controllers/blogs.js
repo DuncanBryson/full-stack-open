@@ -2,9 +2,6 @@ const blogRouter = require("express").Router();
 const Blog = require("../models/blog");
 const User = require("../models/user");
 const { userExtractor, errorHandler } = require("../utils/middleware");
-const jwt = require("jsonwebtoken");
-require("dotenv").config();
-
 blogRouter.get("/", async (request, response) => {
   const blogs = await Blog.find({}).populate("user", { username: 1, name: 1 });
   response.json(blogs);
@@ -22,6 +19,7 @@ blogRouter.get("/:id", async (request, response) => {
 blogRouter.delete("/:id", userExtractor, async (request, response) => {
   const user = request.user;
   const blog = await Blog.findById(request.params.id);
+  if (!blog) return response.status(204).end();
   if (blog.user.toString() !== user._id.toString()) {
     return response
       .status(401)
@@ -33,7 +31,6 @@ blogRouter.delete("/:id", userExtractor, async (request, response) => {
 
 blogRouter.post("/", userExtractor, async (request, response) => {
   let { author, title, url, likes } = request.body;
-  const verifiedToken = jwt.verify(request.token, process.env.SECRET);
   const user = request.user;
 
   const blog = new Blog({

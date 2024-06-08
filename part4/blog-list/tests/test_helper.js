@@ -38,7 +38,7 @@ const initialUsers = [
     username: "Duncan",
     name: "Duncan",
     passwordHash:
-      "$2b$10$zNIcPZGVWL/wOIOsia5qiOSdw93lfznuhjPZs9F8YIqxyXZ0x4oAS",
+      "$2b$10$Qvv5xCDAo3EPR2Zn8pxM0O8Wr0GtqEfuXbzEsVxgtw2rWwVmrcp0S",
   },
   {
     username: "Dave",
