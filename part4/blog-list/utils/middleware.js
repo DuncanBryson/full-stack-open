@@ -1,4 +1,8 @@
 const logger = require("./logger");
+const jwt = require("jsonwebtoken");
+const User = require("../models/user");
+require("dotenv").config();
+
 const errorHandler = (error, request, response, next) => {
   logger.error("handler called", error.message);
   if (error.name === "ValidationError") {
@@ -20,7 +24,7 @@ const errorHandler = (error, request, response, next) => {
   next(error);
 };
 
-const unknownEndpoint = (request, response) => {
+const unknownEndpoint = (request, response, next) => {
   response.status(404).send({ error: "unknown endpoint" });
 };
 
@@ -32,4 +36,19 @@ const tokenExtractor = (request, response, next) => {
   next();
 };
 
-module.exports = { errorHandler, unknownEndpoint, tokenExtractor };
+const userExtractor = async (request, response, next) => {
+  const verifiedToken = jwt.verify(request.token, process.env.SECRET);
+  const user = await User.findById(verifiedToken.id);
+  if (!user) {
+    request.user = null;
+    response.status(401).json({ error: "User not found" });
+  } else request.user = user;
+  next();
+};
+
+module.exports = {
+  errorHandler,
+  unknownEndpoint,
+  tokenExtractor,
+  userExtractor,
+};
