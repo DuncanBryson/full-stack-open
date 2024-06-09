@@ -42,9 +42,9 @@ blogRouter.post("/", userExtractor, async (request, response) => {
   });
 
   if (!blog.title) {
-    response.status(400).json({ Error: "Missing title" });
+    response.status(400).json({ error: "Missing title" });
   } else if (!blog.url) {
-    response.status(400).json({ Error: "Missing url" });
+    response.status(400).json({ error: "Missing url" });
   } else {
     const savedBlog = await blog.save();
     user.blogs = user.blogs.concat(savedBlog._id);
