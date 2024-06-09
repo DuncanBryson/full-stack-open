@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Blog from "./components/Blog";
 import BlogForm from "./components/BlogForm";
 import LoginForm from "./components/LoginForm";
+import Notification from "./components/Notification";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 
@@ -25,14 +26,16 @@ const App = () => {
       setUser(user);
       setUsername("");
       setPassword("");
+      setNotification({ message: `Logged in as ${user.username}` });
     } catch (exception) {
-      console.log("Wrong Credentials");
+      showNotification({ message: exception.response.data.error, error: true });
     }
   };
 
   const handleLogout = () => {
     setUser(null);
     window.localStorage.removeItem("loggedBloglistUser");
+    showNotification({ message: "Successfully logged out" });
   };
 
   useEffect(() => {
@@ -41,19 +44,37 @@ const App = () => {
       setUser(JSON.parse(loggedUser));
     }
   }, []);
+  const [notification, setNotification] = useState(null);
+  const showNotification = ({ message, error }) => {
+    setNotification({ message, error });
+  };
+  useEffect(() => {
+    let timeout = setTimeout(() => {
+      setNotification(null);
+    }, 5000);
+    return () => clearTimeout(timeout);
+  }, [notification]);
 
   return (
     <div>
+      <Notification {...{ notification }} />
       {user === null ? (
         <LoginForm
-          {...{ username, setUsername, password, setPassword, handleLogin }}
+          {...{
+            username,
+            setUsername,
+            password,
+            setPassword,
+            handleLogin,
+            showNotification,
+          }}
         />
       ) : (
         <div>
           <span>{user.username} logged in </span>
           <button onClick={handleLogout}>Logout</button>
           <h2>blogs</h2>
-          <BlogForm />
+          <BlogForm {...{ showNotification, setBlogs, blogs }} />
           <p></p>
           {blogs.map((blog) => (
             <Blog key={blog.id} blog={blog} />
