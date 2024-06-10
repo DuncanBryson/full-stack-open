@@ -5,7 +5,6 @@ import LoginForm from "./components/LoginForm";
 import Notification from "./components/Notification";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
-import Togglable from "./components/Togglable";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -77,11 +76,7 @@ const App = () => {
           <span>{user.username} logged in </span>
           <button onClick={handleLogout}>Logout</button>
           <h2>blogs</h2>
-
-          <Togglable showLabel="New Blog" hideLabel="Cancel">
-            <BlogForm {...{ showNotification, setBlogs, blogs }} />
-          </Togglable>
-
+          <BlogForm {...{ showNotification, setBlogs, blogs, user }} />
           <p></p>
           {blogs
             .sort((a, b) => b.likes - a.likes)
