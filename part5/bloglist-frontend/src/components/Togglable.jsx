@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const Togglable = ({ buttonLabel, children }) => {
+const Togglable = ({ showLabel, hideLabel, children }) => {
   const [visible, setVisible] = useState(false);
 
   const hideWhenVisible = { display: visible ? "none" : "" };
@@ -10,12 +10,13 @@ const Togglable = ({ buttonLabel, children }) => {
 
   return (
     <>
-      <div style={hideWhenVisible}>
-        <button onClick={toggleVisibility}>{buttonLabel}</button>
-      </div>
+      <button style={hideWhenVisible} onClick={toggleVisibility}>
+        {showLabel}
+      </button>
+
       <div style={showWhenVisible}>
         {children}
-        <button onClick={toggleVisibility}>cancel</button>
+        <button onClick={toggleVisibility}>{hideLabel}</button>
       </div>
     </>
   );

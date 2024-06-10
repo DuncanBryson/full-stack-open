@@ -76,7 +76,7 @@ const App = () => {
           <button onClick={handleLogout}>Logout</button>
           <h2>blogs</h2>
 
-          <Togglable buttonLabel="New Blog">
+          <Togglable showLabel="New Blog" hideLabel="Cancel">
             <BlogForm {...{ showNotification, setBlogs, blogs }} />
           </Togglable>
 
