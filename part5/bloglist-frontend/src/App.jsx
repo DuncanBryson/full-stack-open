@@ -42,7 +42,9 @@ const App = () => {
   useEffect(() => {
     const loggedUser = window.localStorage.getItem("loggedBloglistUser");
     if (loggedUser) {
-      setUser(JSON.parse(loggedUser));
+      const user = JSON.parse(loggedUser);
+      setUser(user);
+      blogService.setToken(user.token);
     }
   }, []);
   const [notification, setNotification] = useState(null);
