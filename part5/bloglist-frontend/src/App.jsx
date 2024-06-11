@@ -57,6 +57,32 @@ const App = () => {
     return () => clearTimeout(timeout);
   }, [notification]);
 
+  const addLike = async (blog, likes) => {
+    try {
+      const response = await blogService.addLike(blog.id, {
+        likes: likes + 1,
+      });
+      return response;
+    } catch (exception) {
+      console.log(exception);
+    }
+  };
+
+  const deleteBlog = async (blog) => {
+    if (window.confirm(`Remove blog: ${blog.title} by ${blog.author}?`))
+      try {
+        await blogService.remove(blog.id);
+        showNotification({ message: `${blog.title} deleted` });
+        const newBlogs = blogs.filter((b) => b.id !== blog.id);
+        setBlogs(newBlogs);
+      } catch (exception) {
+        showNotification({
+          message: exception.response.data.error,
+          error: true,
+        });
+      }
+  };
+
   return (
     <div>
       <Notification {...{ notification }} />
@@ -81,12 +107,7 @@ const App = () => {
           {blogs
             .sort((a, b) => b.likes - a.likes)
             .map((blog) => (
-              <Blog
-                key={blog.id}
-                blog={blog}
-                showNotification={showNotification}
-                user={user}
-              />
+              <Blog key={blog.id} {...{ deleteBlog, addLike, user, blog }} />
             ))}
         </div>
       )}
