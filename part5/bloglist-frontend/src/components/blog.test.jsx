@@ -27,4 +27,13 @@ describe("Blogs rendering correctly", async () => {
     const hidden = container.querySelector(".hidden");
     expect(hidden).toHaveStyle("display:none");
   });
+
+  test("Button shows URL and likes", async () => {
+    const interaction = userEvent.setup();
+    const button = screen.getByText("view");
+    await interaction.click(button);
+    const hidden = container.querySelector(".hidden");
+
+    expect(hidden).not.toHaveStyle("display:none");
+  });
 });
