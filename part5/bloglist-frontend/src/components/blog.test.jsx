@@ -2,17 +2,18 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Blog from "./Blog";
 
+const user = { username: "username" };
+const blog = {
+  title: "render title",
+  author: "render author",
+  url: "render url",
+  likes: "render likes",
+  username: "username",
+  user: user,
+};
+
 describe("Blogs rendering correctly", async () => {
   let container;
-  const user = { username: "username" };
-  const blog = {
-    title: "render title",
-    author: "render author",
-    url: "render url",
-    likes: "render likes",
-    username: "username",
-    user: user,
-  };
   beforeEach(() => {
     container = render(<Blog blog={blog} user={user} />).container;
   });
@@ -36,4 +37,16 @@ describe("Blogs rendering correctly", async () => {
 
     expect(hidden).not.toHaveStyle("display:none");
   });
+});
+
+test("Likes button working", async () => {
+  const response = { likes: "n" };
+  const addLike = vi.fn(() => response);
+  render(<Blog {...{ blog, user, addLike }} />);
+  const interaction = userEvent.setup();
+  const button = screen.getByText("like");
+  await interaction.click(button);
+  await interaction.click(button);
+
+  expect(addLike.mock.calls).toHaveLength(2);
 });
