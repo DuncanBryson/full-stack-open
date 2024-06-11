@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Blog from "./components/Blog";
 import BlogForm from "./components/BlogForm";
 import LoginForm from "./components/LoginForm";
@@ -83,6 +83,21 @@ const App = () => {
       }
   };
 
+  const blogFormRef = useRef();
+  const addBlog = async (blogObject) => {
+    try {
+      const newBlog = await blogService.create(blogObject);
+      newBlog.user = user;
+      setBlogs(blogs.concat(newBlog));
+      showNotification({
+        message: `New Blog ${blogObject.title} by ${blogObject.author} added`,
+      });
+      blogFormRef.current.toggleVisibility();
+    } catch (error) {
+      showNotification({ message: error.response.data.error, error: true });
+    }
+  };
+
   return (
     <div>
       <Notification {...{ notification }} />
@@ -102,7 +117,7 @@ const App = () => {
           <span>{user.username} logged in </span>
           <button onClick={handleLogout}>Logout</button>
           <h2>blogs</h2>
-          <BlogForm {...{ showNotification, setBlogs, blogs, user }} />
+          <BlogForm {...{ addBlog, blogFormRef }} />
           <p></p>
           {blogs
             .sort((a, b) => b.likes - a.likes)

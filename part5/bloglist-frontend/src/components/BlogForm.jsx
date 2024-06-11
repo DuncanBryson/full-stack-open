@@ -1,32 +1,21 @@
-import { useState, useRef } from "react";
-import blogService from "../services/blogs";
+import { useState } from "react";
 import Togglable from "./Togglable";
 
-const Form = ({ showNotification, setBlogs, blogs, user }) => {
+const Form = ({ addBlog, blogFormRef }) => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
 
-  const addBlog = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    try {
-      const newBlog = await blogService.create({ title, author, url });
-      newBlog.user = user;
-      setBlogs(blogs.concat(newBlog));
-      showNotification({ message: `New Blog ${title} by ${author} added` });
-      blogFormRef.current.toggleVisibility();
-    } catch (error) {
-      showNotification({ message: error.response.data.error, error: true });
-    }
+    addBlog({ title, author, url });
   };
-
-  const blogFormRef = useRef();
 
   return (
     <div>
       <Togglable showLabel="New Blog" hideLabel="Cancel" ref={blogFormRef}>
         <h2>Create New Blog</h2>
-        <form onSubmit={addBlog}>
+        <form onSubmit={handleSubmit}>
           <div>
             <label htmlFor="title">Title: </label>
             <input
