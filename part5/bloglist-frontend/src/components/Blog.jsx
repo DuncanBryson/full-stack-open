@@ -27,7 +27,7 @@ const Blog = ({ blog, user, addLike, deleteBlog }) => {
       <Togglable showLabel="view" hideLabel="hide">
         <p>{blog.url}</p>
         <p>
-          {likes} <button onClick={handleLike}>like</button>
+          Likes: {likes} <button onClick={handleLike}>like</button>
         </p>
         <p>{blog.user.username}</p>
         <button onClick={handleDelete} style={showDelete}>
