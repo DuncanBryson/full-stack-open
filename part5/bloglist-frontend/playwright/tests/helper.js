@@ -10,6 +10,7 @@ const addBlog = async (page, title, author, url) => {
   await page.getByLabel("Author").fill(author);
   await page.getByLabel("URL").fill(url);
   await page.getByRole("button", { name: "Add Blog" }).click();
+  await page.getByText(`${title} by ${author}`).waitFor();
 };
 
 export { login, addBlog };

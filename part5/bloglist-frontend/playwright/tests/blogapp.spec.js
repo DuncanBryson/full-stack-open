@@ -66,5 +66,14 @@ describe("Blog app", () => {
       await likeButton();
       await expect(page.getByText("2 like")).toBeVisible();
     });
+    test("a blog can be deleted", async ({ page }) => {
+      await page.on("dialog", (dialog) => dialog.accept());
+      await page.getByRole("button", { name: "view" }).click();
+      await page.getByRole("button", { name: "DELETE" }).click();
+
+      const notification = await page.locator(".notification");
+      await expect(notification).toContainText("Old Blog deleted");
+      await expect(notification).toHaveCSS("color", "rgb(0, 128, 0)");
+    });
   });
 });
