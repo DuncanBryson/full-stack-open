@@ -75,5 +75,20 @@ describe("Blog app", () => {
       await expect(notification).toContainText("Old Blog deleted");
       await expect(notification).toHaveCSS("color", "rgb(0, 128, 0)");
     });
+    test("only original poster can see DELETE", async ({ page, request }) => {
+      await request.post("/api/users", {
+        data: {
+          name: "newtester",
+          username: "newtester",
+          password: "sekurity",
+        },
+      });
+      await page.getByRole("button", { name: "Logout" }).click();
+      await login(page, "newtester", "sekurity");
+      await page.getByRole("button", { name: "view" }).click();
+      await expect(
+        page.getByRole("button", { name: "DELETE" })
+      ).not.toBeVisible();
+    });
   });
 });
