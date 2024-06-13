@@ -22,7 +22,7 @@ const Blog = ({ blog, user, addLike, deleteBlog }) => {
   const handleDelete = () => deleteBlog(blog);
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className="blog">
       {blog.title} <em>{blog.author}</em>{" "}
       <Togglable showLabel="view" hideLabel="hide">
         <p>{blog.url}</p>
