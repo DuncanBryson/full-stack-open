@@ -1,4 +1,5 @@
 const login = async (page, username, password) => {
+  await page.goto("http://localhost:5173");
   await page.getByLabel("Username").fill(username);
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Login" }).click();
@@ -13,4 +14,15 @@ const addBlog = async (page, title, author, url) => {
   await page.getByText(`${title} by ${author}`).waitFor();
 };
 
-export { login, addBlog };
+const getToken = async (request) => {
+  const response = await request.post("/api/login", {
+    data: {
+      username: "test",
+      password: "sekurity",
+    },
+  });
+  const responseBody = await response.json();
+  return responseBody.token;
+};
+
+export { login, addBlog, getToken };

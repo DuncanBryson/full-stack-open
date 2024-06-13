@@ -1,5 +1,5 @@
 const { test, expect, beforeEach, describe } = require("@playwright/test");
-const { login, addBlog } = require("./helper");
+const { login, addBlog, getToken } = require("./helper");
 
 describe("Blog app", () => {
   beforeEach(async ({ page, request }) => {
@@ -11,10 +11,10 @@ describe("Blog app", () => {
         password: "sekurity",
       },
     });
-    await page.goto("http://localhost:5173");
   });
 
   test("Login form is shown", async ({ page }) => {
+    await page.goto("http://localhost:5173");
     await expect(page.getByText("Username")).toBeVisible();
     await expect(page.getByText("Password")).toBeVisible();
   });
@@ -89,6 +89,65 @@ describe("Blog app", () => {
       await expect(
         page.getByRole("button", { name: "DELETE" })
       ).not.toBeVisible();
+    });
+  });
+  describe("Blogs with preexisting likes", () => {
+    beforeEach(async ({ request, page }) => {
+      const token = await getToken(request);
+      await request.post("/api/blogs", {
+        data: {
+          title: "Second",
+          author: "BlogAuthor",
+          url: "https://www.notawebsite.com",
+          likes: 9998,
+        },
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      });
+      await request.post("/api/blogs", {
+        data: {
+          title: "Most popular",
+          author: "BlogAuthor",
+          url: "https://www.notawebsite.com",
+          likes: 9999,
+        },
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      });
+      await request.post("/api/blogs", {
+        data: {
+          title: "Third",
+          author: "BlogAuthor",
+          url: "https://www.notawebsite.com",
+          likes: 10,
+        },
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      });
+
+      login(page, "test", "sekurity");
+    });
+    test.only("blogs are sorted by likes", async ({ page }) => {
+      await page.getByText("Logged in as test").waitFor();
+      // Most likes shows first
+      let oldBlogs = await page.$$(".blog");
+      expect(await oldBlogs[0].innerText()).toContain("Most popular");
+      // Make second most liked into most liked
+      await page.getByRole("button", { name: "view" }).nth(1).click();
+      const likeButton = async (i) => {
+        for (let j = 0; j < i; j++) {
+          await page.getByRole("button", { name: "like" }).click();
+        }
+      };
+      await likeButton(2);
+      // Reload page and check that Second is now shown first
+      await page.goto("http://localhost:5173");
+      await page.getByText("Most popular").waitFor();
+      let newBlogs = await page.$$(".blog");
+      expect(await newBlogs[0].innerText()).toContain("Second");
     });
   });
 });
