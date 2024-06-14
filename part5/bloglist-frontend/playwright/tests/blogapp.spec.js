@@ -130,10 +130,10 @@ describe("Blog app", () => {
 
       login(page, "test", "sekurity");
     });
-    test.only("blogs are sorted by likes", async ({ page }) => {
+    test("blogs are sorted by likes", async ({ page }) => {
       await page.getByText("Logged in as test").waitFor();
       // Most likes shows first
-      let oldBlogs = await page.$$(".blog");
+      const oldBlogs = await page.$$(".blog");
       expect(await oldBlogs[0].innerText()).toContain("Most popular");
       // Make second most liked into most liked
       await page.getByRole("button", { name: "view" }).nth(1).click();
