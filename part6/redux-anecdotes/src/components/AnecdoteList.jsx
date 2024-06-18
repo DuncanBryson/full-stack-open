@@ -11,14 +11,20 @@ const Anecdote = ({ anecdote, handleClick }) => (
   </div>
 );
 const AnecdoteList = () => {
-  const anecdotes = useSelector((state) => state);
+  const anecdotes = useSelector(({ filter, anecdotes }) => {
+    if (filter === "") return anecdotes;
+    return anecdotes.filter((a) =>
+      a.content.toLowerCase().includes(filter.toLowerCase())
+    );
+  });
+
   const dispatch = useDispatch();
   const vote = (id) => {
     dispatch(addVote(id));
   };
   return (
     <>
-      {[...anecdotes]
+      {anecdotes
         .sort((a, b) => (a.votes > b.votes ? -1 : 1))
         .map((anecdote) => (
           <Anecdote
