@@ -18,13 +18,15 @@ const AnecdoteList = () => {
   };
   return (
     <>
-      {anecdotes.map((anecdote) => (
-        <Anecdote
-          handleClick={() => vote(anecdote.id)}
-          anecdote={anecdote}
-          key={anecdote.id}
-        />
-      ))}
+      {[...anecdotes]
+        .sort((a, b) => (a.votes > b.votes ? -1 : 1))
+        .map((anecdote) => (
+          <Anecdote
+            handleClick={() => vote(anecdote.id)}
+            anecdote={anecdote}
+            key={anecdote.id}
+          />
+        ))}
     </>
   );
 };
