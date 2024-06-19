@@ -1,0 +1,7 @@
+import axios from "axios";
+const baseUrl = "http://0.0.0.0:3001/anecdotes";
+
+export const getAnecdotes = async () => {
+  const result = await axios.get(baseUrl);
+  return result.data;
+};
