@@ -1,7 +1,7 @@
 import AnecdoteForm from "./components/AnecdoteForm";
 import Notification from "./components/Notification";
-import { getAnecdotes } from "./requests";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getAnecdotes, createAnecdote } from "./requests";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const App = () => {
   const queryClient = useQueryClient();
@@ -17,20 +17,31 @@ const App = () => {
   });
 
   console.log(JSON.parse(JSON.stringify(fetchAnecdotes)));
+
+  const anecdotes = fetchAnecdotes.data;
+
+  const newAnecdoteMutation = useMutation({
+    mutationFn: createAnecdote,
+    onSuccess: (newAnecdote) => {
+      const anecdotes = queryClient.getQueryData(["anecdotes"]);
+      queryClient.setQueryData(["anecdotes"], anecdotes.concat(newAnecdote));
+    },
+  });
+  const addAnecdote = (content) => {
+    newAnecdoteMutation.mutate({ content, votes: 0 });
+  };
   if (fetchAnecdotes.isLoading) return <div>Anecdotes Loading...</div>;
   if (fetchAnecdotes.isError)
     return (
       console.log("Error: ", fetchAnecdotes.error.message),
       (<div>Anecdote service not available due to server problems</div>)
     );
-
-  const anecdotes = fetchAnecdotes.data;
   return (
     <div>
       <h3>Anecdote app</h3>
 
       <Notification />
-      <AnecdoteForm />
+      <AnecdoteForm {...{ addAnecdote }} />
 
       {anecdotes.map((anecdote) => (
         <div key={anecdote.id}>
