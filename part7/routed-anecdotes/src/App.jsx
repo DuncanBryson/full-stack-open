@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Link,
+  useMatch,
+  useParams,
+} from "react-router-dom";
 
 const Menu = () => {
   const padding = {
@@ -25,11 +32,30 @@ const AnecdoteList = ({ anecdotes }) => (
     <h2>Anecdotes</h2>
     <ul>
       {anecdotes.map((anecdote) => (
-        <li key={anecdote.id}>{anecdote.content}</li>
+        <li key={anecdote.id}>
+          <a href={`/anecdotes/${anecdote.id}`}>{anecdote.content}</a>
+        </li>
       ))}
     </ul>
   </div>
 );
+
+const Anecdote = ({ anecdotes }) => {
+  const id = useParams().id;
+  const anecdote = anecdotes.find((a) => a.id === Number(id));
+  if (!anecdote) return <h1>Invalid anecdote ID</h1>;
+  return (
+    <div>
+      <h2>
+        {anecdote.content} by {anecdote.author}
+      </h2>
+      <p>Has {anecdote.votes} votes</p>
+      <p>
+        For more info visit <a href={anecdote.info}>{anecdote.info}</a>
+      </p>
+    </div>
+  );
+};
 
 const About = () => (
   <div>
@@ -150,20 +176,21 @@ const App = () => {
 
     setAnecdotes(anecdotes.map((a) => (a.id === id ? voted : a)));
   };
-
   return (
-    <div>
-      <Router>
-        <h1>Software anecdotes</h1>
-        <Menu />
-        <Routes>
-          <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />
-          <Route path="/create" element={<CreateNew addNew={addNew} />} />
-          <Route path="/about" element={<About />} />
-        </Routes>
-      </Router>
+    <Router>
+      <h1>Software anecdotes</h1>
+      <Menu />
+      <Routes>
+        <Route
+          path="/anecdotes/:id"
+          element={<Anecdote anecdotes={anecdotes} />}
+        />
+        <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />
+        <Route path="/create" element={<CreateNew addNew={addNew} />} />
+        <Route path="/about" element={<About />} />
+      </Routes>
       <Footer />
-    </div>
+    </Router>
   );
 };
 
