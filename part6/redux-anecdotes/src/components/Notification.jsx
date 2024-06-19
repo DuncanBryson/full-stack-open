@@ -13,10 +13,10 @@ const Notification = () => {
   useEffect(() => {
     let timeout = setTimeout(() => {
       dispatch(clearNotification());
-    }, 5000);
+    }, notification?.timeout * 1000);
     return () => clearTimeout(timeout);
   });
-  if (notification) return <div style={style}>{notification}</div>;
+  if (notification) return <div style={style}>{notification.message}</div>;
   else return null;
 };
 export default Notification;
