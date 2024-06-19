@@ -27,7 +27,7 @@ const App = () => {
       queryClient.setQueryData(["anecdotes"], anecdotes.concat(newAnecdote));
     },
   });
-  const addAnecdote = (content) => {
+  const handleAdd = (content) => {
     newAnecdoteMutation.mutate({ content, votes: 0 });
   };
   if (fetchAnecdotes.isLoading) return <div>Anecdotes Loading...</div>;
@@ -41,7 +41,7 @@ const App = () => {
       <h3>Anecdote app</h3>
 
       <Notification />
-      <AnecdoteForm {...{ addAnecdote }} />
+      <AnecdoteForm {...{ handleAdd }} />
 
       {anecdotes.map((anecdote) => (
         <div key={anecdote.id}>
