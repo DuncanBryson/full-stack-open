@@ -1,3 +1,4 @@
+import { useNotificationDispatch } from "./NotificationContext";
 import AnecdoteForm from "./components/AnecdoteForm";
 import Notification from "./components/Notification";
 import { getAnecdotes, createAnecdote, updateAnecdote } from "./requests";
@@ -17,8 +18,13 @@ const App = () => {
       );
     },
   });
+  const dispatchNotification = useNotificationDispatch();
   const handleVote = (anecdote) => {
     updateAnecdoteMutation.mutate({ ...anecdote, votes: anecdote.votes + 1 });
+    dispatchNotification({
+      type: "CREATE",
+      payload: `Voted for ${anecdote.content}`,
+    });
   };
 
   const fetchAnecdotes = useQuery({
@@ -41,6 +47,10 @@ const App = () => {
   });
   const handleAdd = (content) => {
     newAnecdoteMutation.mutate({ content, votes: 0 });
+    dispatchNotification({
+      type: "CREATE",
+      payload: `Added ${content}`,
+    });
   };
   if (fetchAnecdotes.isLoading) return <div>Anecdotes Loading...</div>;
   if (fetchAnecdotes.isError)
