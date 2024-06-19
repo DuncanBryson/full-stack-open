@@ -44,6 +44,12 @@ const App = () => {
       const anecdotes = queryClient.getQueryData(["anecdotes"]);
       queryClient.setQueryData(["anecdotes"], anecdotes.concat(newAnecdote));
     },
+    onError: (error) => {
+      dispatchNotification({
+        type: "CREATE",
+        payload: error.response.data.error,
+      });
+    },
   });
   const handleAdd = (content) => {
     newAnecdoteMutation.mutate({ content, votes: 0 });
