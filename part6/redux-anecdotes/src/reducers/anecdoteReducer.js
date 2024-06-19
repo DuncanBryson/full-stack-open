@@ -34,7 +34,7 @@ const anecdoteSlice = createSlice({
     },
     createAnecdote(state, action) {
       const content = action.payload;
-      state.push(asObject(content));
+      state.push(content);
     },
     setAnecdotes(state, action) {
       return action.payload;
