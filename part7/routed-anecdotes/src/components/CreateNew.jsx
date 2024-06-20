@@ -18,24 +18,30 @@ const CreateNew = ({ addNew }) => {
     });
     navigate("/");
   };
-
+  const handleReset = () => {
+    content.reset(""), author.reset(""), info.reset("");
+  };
+  const reset = null;
   return (
     <div>
       <h2>create a new anecdote</h2>
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input {...content} />
+          <input {...{ ...content, reset }} />
         </div>
         <div>
           author
-          <input {...author} />
+          <input {...{ ...author, reset }} />
         </div>
         <div>
           url for more info
-          <input {...info} />
+          <input {...{ ...info, reset }} />
         </div>
-        <button>create</button>
+        <button type="submit">create</button>
+        <button type="reset" onClick={handleReset}>
+          reset
+        </button>
       </form>
     </div>
   );
