@@ -19,11 +19,11 @@ const create = async (newObject) => {
   return response.data;
 };
 
-const addLike = async (id, likes) => {
+const updateBlog = async (blog) => {
   const config = {
     headers: { Authorization: token },
   };
-  const response = await axios.put(`${baseUrl}/${id}`, likes, config);
+  const response = await axios.put(`${baseUrl}/${blog.id}`, blog, config);
   return response.data;
 };
 
@@ -35,4 +35,4 @@ const remove = async (id) => {
   return response.data;
 };
 
-export default { getAll, setToken, create, addLike, remove };
+export default { getAll, setToken, create, updateBlog, remove };

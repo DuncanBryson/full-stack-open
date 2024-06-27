@@ -1,14 +1,19 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Togglable from "./Togglable";
+import { createBlog } from "../reducers/blogReducer";
+import { useDispatch } from "react-redux";
 
-const Form = ({ addBlog, blogFormRef }) => {
+const Form = ({ user }) => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
 
+  const dispatch = useDispatch();
+  const blogFormRef = useRef();
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    addBlog({ title, author, url });
+    dispatch(createBlog({ title, author, url }, user, blogFormRef));
   };
 
   return (
