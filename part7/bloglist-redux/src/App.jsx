@@ -6,8 +6,9 @@ import Notification from "./components/Notification";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import { createNotification } from "./reducers/notificationReducer";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { initializeBlogs } from "./reducers/blogReducer";
+import { updateUser, logout } from "./reducers/userReducer";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -17,19 +18,20 @@ const App = () => {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [user, setUser] = useState(null);
 
-  const handleLogin = async (event) => {
-    event.preventDefault();
+  const user = useSelector((state) => state.user);
+
+  const loginAs = async (username, password) => {
     try {
-      const user = await loginService.login({ username, password });
-      window.localStorage.setItem("loggedBloglistUser", JSON.stringify(user));
-      blogService.setToken(user.token);
-      setUser(user);
-      setUsername("");
-      setPassword("");
+      const newUser = await loginService.login({ username, password });
+      window.localStorage.setItem(
+        "loggedBloglistUser",
+        JSON.stringify(newUser)
+      );
+      blogService.setToken(newUser.token);
+      dispatch(updateUser(newUser));
       dispatch(
-        createNotification({ message: `Logged in as ${user.username}` })
+        createNotification({ message: `Logged in as ${newUser.username}` })
       );
     } catch (exception) {
       dispatch(
@@ -41,17 +43,12 @@ const App = () => {
     }
   };
 
-  const handleLogout = () => {
-    setUser(null);
-    window.localStorage.removeItem("loggedBloglistUser");
-    dispatch(createNotification({ message: "Successfully logged out" }));
-  };
-
   useEffect(() => {
     const loggedUser = window.localStorage.getItem("loggedBloglistUser");
     if (loggedUser) {
       const user = JSON.parse(loggedUser);
-      setUser(user);
+      dispatch(updateUser(user));
+
       blogService.setToken(user.token);
     }
   }, []);
@@ -60,19 +57,11 @@ const App = () => {
     <div>
       <Notification />
       {user === null ? (
-        <LoginForm
-          {...{
-            username,
-            setUsername,
-            password,
-            setPassword,
-            handleLogin,
-          }}
-        />
+        <LoginForm {...{ loginAs }} />
       ) : (
         <div>
           <span>{user.username} logged in </span>
-          <button onClick={handleLogout}>Logout</button>
+          <button onClick={() => dispatch(logout())}>Logout</button>
           <h2>blogs</h2>
           <BlogForm {...{ user }} />
           <p></p>
