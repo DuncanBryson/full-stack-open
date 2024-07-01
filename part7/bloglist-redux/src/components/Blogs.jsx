@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import Togglable from "./Togglable";
 import { deleteBlog, addLike } from "../reducers/blogReducer";
-
+import BlogForm from "./BlogForm";
 const Blog = ({ blog, user }) => {
   const dispatch = useDispatch();
   const handleLike = async () => {
@@ -47,6 +47,8 @@ const Blogs = ({ user }) => {
 
   return (
     <>
+      <BlogForm {...{ user }} />
+      <p></p>
       {[...blogs]
         .sort((a, b) => b.likes - a.likes)
         .map((blog) => (
