@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addLike, deleteBlog, addComment } from "../reducers/blogReducer";
 import { createNotification } from "../reducers/notificationReducer";
@@ -11,7 +11,7 @@ const Blog = ({ user }) => {
   const handleLike = async () => {
     dispatch(addLike(blog));
   };
-
+  const reroute = useNavigate();
   const { id } = useParams();
   const blogs = useSelector((state) => state.blogs);
 
@@ -25,6 +25,7 @@ const Blog = ({ user }) => {
   const handleDelete = () => {
     if (window.confirm(`Remove blog: ${blog.title} by ${blog.author}?`)) {
       dispatch(deleteBlog(blog));
+      reroute("/");
     }
   };
 

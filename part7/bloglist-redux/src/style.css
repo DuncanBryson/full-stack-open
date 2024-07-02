@@ -1,0 +1,137 @@
+:root {
+  --gray: #c9c8c8;
+  --blue: royalblue;
+}
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+.notification {
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+.content{
+  display: grid;
+  grid-template-columns: 1fr 4fr;
+  min-height: 100vh;
+}
+h2,
+h3{
+  margin: 0;
+}
+a{
+  text-decoration: none;
+}
+
+
+
+#menubar {
+  background-color: var(--blue);
+  grid-row: span 2;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-items: left;
+  padding: 4vh 3vw;
+  gap: 2vh 1vw;
+  text-align: center;
+  a {  color:white;
+    }
+
+}
+ 
+.links {
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  li {
+    list-style: none;
+  }
+}
+.links li a,
+.logout a{
+  display: flex;
+  align-items: center;
+
+  gap: 1.5rem;
+  flex-direction: row;
+}
+
+.links, .logout {
+  cursor: pointer;
+  :hover{
+    filter:invert(70%);
+    transform: scale(1.07);
+  }
+}
+
+.header {
+  background-color: white;
+  padding: 2vh 4vw;
+  display: flex;
+  flex-direction:column;
+  gap: 2vw;
+  align-items: center;
+  justify-content: space-around;
+  button {
+    background-color: var(--blue);
+    color: white;
+    border-radius: 2rem;
+    font-size: 1rem;
+    border-style: none;
+    padding: 1rem 2rem;
+    font-weight: 600;
+    width: 140px;
+    cursor: pointer;
+  }
+  input {
+    border-radius: 15px;
+    border: solid 1px black;
+    background-color: var(--gray);
+    flex: 1;
+    font-weight: 300;
+    font-size: 1.5rem;
+  }
+}
+
+.blogForm {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+}
+
+.newBlog {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+
+}
+.inputs{
+  display:flex;
+  flex-direction: column;
+
+  margin: 5px;
+  gap: 5px;
+  div {
+    display: grid;
+  }
+}
+
+.main {
+  background-color: var(--gray);
+  gap: 1vh 1vw;
+  padding: 2vh 1vw;
+}
+
+table {
+  background-color: white;
+  border-style: solid;
+}

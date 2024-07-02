@@ -1,6 +1,4 @@
 import { useSelector } from "react-redux";
-
-import BlogForm from "./BlogForm";
 import { Link } from "react-router-dom";
 
 const Blog = ({ blog }) => {
@@ -10,6 +8,8 @@ const Blog = ({ blog }) => {
     border: "solid",
     borderWidth: 1,
     marginBottom: 5,
+    borderRadius: "10px",
+    backgroundColor: "white",
   };
 
   return (
@@ -24,7 +24,6 @@ const Blogs = ({ user }) => {
 
   return (
     <>
-      <BlogForm {...{ user }} />
       <p></p>
       {[...blogs]
         .sort((a, b) => b.likes - a.likes)

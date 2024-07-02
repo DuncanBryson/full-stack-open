@@ -5,6 +5,7 @@ import Notification from "./components/Notification";
 import Users from "./components/Users";
 import UserBlogs from "./components/UserBlogs";
 import Blog from "./components/Blog";
+import BlogForm from "./components/BlogForm";
 import Menu from "./components/menu";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
@@ -63,25 +64,34 @@ const App = () => {
   }, []);
 
   return (
-    <Router>
-      <Notification />
-      {user === null ? (
-        <LoginForm {...{ loginAs }} />
-      ) : (
-        <div>
-          <Menu />
-          <span>{user.username} logged in </span>
-          <button onClick={() => dispatch(logout())}>Logout</button>
-          <h2>blogs</h2>
-          <Routes>
-            <Route path="/" element={<Blogs {...{ user }} />} />
-            <Route path="/users" element={<Users {...{ users }} />} />
-            <Route path="/users/:id" element={<UserBlogs {...{ users }} />} />
-            <Route path="/blogs/:id" element={<Blog {...{ user }} />} />
-          </Routes>
-        </div>
-      )}
-    </Router>
+    <div id="body">
+      <Router>
+        <Notification />
+        {user === null ? (
+          <LoginForm {...{ loginAs }} />
+        ) : (
+          <div className="content">
+            <Menu {...{ user, logout, dispatch }} />
+            <div className="header">
+              <h2>Blogs</h2>
+              <BlogForm {...{ user }} />
+            </div>
+
+            <div className="main">
+              <Routes>
+                <Route path="/" element={<Blogs {...{ user }} />} />
+                <Route path="/users" element={<Users {...{ users }} />} />
+                <Route
+                  path="/users/:id"
+                  element={<UserBlogs {...{ users }} />}
+                />
+                <Route path="/blogs/:id" element={<Blog {...{ user }} />} />
+              </Routes>
+            </div>
+          </div>
+        )}
+      </Router>
+    </div>
   );
 };
 
