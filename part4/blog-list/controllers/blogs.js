@@ -1,4 +1,5 @@
 const blogRouter = require("express").Router();
+const { createHtmlTagObject } = require("html-webpack-plugin");
 const Blog = require("../models/blog");
 const { userExtractor, errorHandler } = require("../utils/middleware");
 blogRouter.get("/", async (request, response) => {
@@ -49,6 +50,21 @@ blogRouter.post("/", userExtractor, async (request, response) => {
     user.blogs = user.blogs.concat(savedBlog._id);
     await user.save();
     response.status(201).json(savedBlog);
+  }
+});
+
+blogRouter.post("/:id", async (request, response) => {
+  const { comment } = request.body;
+  const blog = await Blog.findById(request.params.id);
+  if (blog) {
+    const comments = [...blog.comments];
+    comments.push(comment);
+    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, {
+      comments,
+    });
+    response.status(200).json(updatedBlog);
+  } else {
+    response.status(404).end();
   }
 });
 
