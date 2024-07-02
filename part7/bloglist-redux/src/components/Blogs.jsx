@@ -1,13 +1,9 @@
-import { useDispatch, useSelector } from "react-redux";
-import Togglable from "./Togglable";
-import { deleteBlog, addLike } from "../reducers/blogReducer";
-import BlogForm from "./BlogForm";
-const Blog = ({ blog, user }) => {
-  const dispatch = useDispatch();
-  const handleLike = async () => {
-    dispatch(addLike(blog));
-  };
+import { useSelector } from "react-redux";
 
+import BlogForm from "./BlogForm";
+import { Link } from "react-router-dom";
+
+const Blog = ({ blog }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -16,28 +12,9 @@ const Blog = ({ blog, user }) => {
     marginBottom: 5,
   };
 
-  const showDelete =
-    user.username === blog.user.username ? null : { display: "none" };
-
-  const handleDelete = () => {
-    if (window.confirm(`Remove blog: ${blog.title} by ${blog.author}?`)) {
-      dispatch(deleteBlog(blog));
-    }
-  };
-
   return (
     <div style={blogStyle} className="blog">
-      {blog.title} <em>{blog.author}</em>{" "}
-      <Togglable showLabel="view" hideLabel="hide">
-        <p>{blog.url}</p>
-        <p>
-          Likes: {blog.likes} <button onClick={handleLike}>like</button>
-        </p>
-        <p>{blog.user.username}</p>
-        <button onClick={handleDelete} style={showDelete}>
-          DELETE
-        </button>
-      </Togglable>
+      <Link to={`/blogs/${blog.id}`}>{blog.title}</Link> <em>{blog.author}</em>{" "}
     </div>
   );
 };
