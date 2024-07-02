@@ -5,6 +5,7 @@ import Notification from "./components/Notification";
 import Users from "./components/Users";
 import UserBlogs from "./components/UserBlogs";
 import Blog from "./components/Blog";
+import Menu from "./components/menu";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import userService from "./services/users";
@@ -68,6 +69,7 @@ const App = () => {
         <LoginForm {...{ loginAs }} />
       ) : (
         <div>
+          <Menu />
           <span>{user.username} logged in </span>
           <button onClick={() => dispatch(logout())}>Logout</button>
           <h2>blogs</h2>
