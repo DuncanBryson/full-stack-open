@@ -1,10 +1,12 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Blogs from "./components/Blogs";
 import LoginForm from "./components/LoginForm";
 import Notification from "./components/Notification";
 import Users from "./components/Users";
+import UserBlogs from "./components/UserBlogs";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
+import userService from "./services/users";
 import { createNotification } from "./reducers/notificationReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { initializeBlogs } from "./reducers/blogReducer";
@@ -15,6 +17,13 @@ const App = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(initializeBlogs());
+  }, []);
+  const [users, setUsers] = useState([]);
+  useEffect(() => {
+    (async () => {
+      const response = await userService.getUsers();
+      setUsers(response);
+    })();
   }, []);
 
   const user = useSelector((state) => state.user);
@@ -63,7 +72,8 @@ const App = () => {
           <h2>blogs</h2>
           <Routes>
             <Route path="/" element={<Blogs {...{ user }} />} />
-            <Route path="/users" element={<Users />} />
+            <Route path="/users" element={<Users {...{ users }} />} />
+            <Route path="/users/:id" element={<UserBlogs {...{ users }} />} />
           </Routes>
         </div>
       )}
