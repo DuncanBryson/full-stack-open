@@ -53,7 +53,7 @@ blogRouter.post("/", userExtractor, async (request, response) => {
   }
 });
 
-blogRouter.post("/:id", async (request, response) => {
+blogRouter.post("/:id/comments", async (request, response) => {
   const { comment } = request.body;
   const blog = await Blog.findById(request.params.id);
   if (blog) {
