@@ -1,9 +1,12 @@
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { addLike, deleteBlog } from "../reducers/blogReducer";
+import { addLike, deleteBlog, addComment } from "../reducers/blogReducer";
+import { createNotification } from "../reducers/notificationReducer";
 
 const Blog = ({ user }) => {
+  const [comment, setComment] = useState("");
   const dispatch = useDispatch();
   const handleLike = async () => {
     dispatch(addLike(blog));
@@ -25,6 +28,19 @@ const Blog = ({ user }) => {
     }
   };
 
+  const handleComment = (event) => {
+    event.preventDefault();
+    if (blog.comments.includes(comment))
+      return dispatch(
+        createNotification({
+          message: "No duplicate comments, be original",
+          error: true,
+        })
+      );
+    dispatch(addComment(blog, comment));
+    setComment("");
+  };
+
   return (
     <div>
       <h3>
@@ -41,6 +57,22 @@ const Blog = ({ user }) => {
       <button onClick={handleDelete} style={showDelete}>
         DELETE
       </button>
+      <p></p>
+      <h3>Comments</h3>
+      <input
+        id="comment"
+        type="text"
+        value={comment}
+        onChange={({ target }) => setComment(target.value)}
+      />
+      <button type="submit" onClick={handleComment}>
+        Comment
+      </button>
+      <ul>
+        {blog.comments.map((comment) => (
+          <li key={blog.comments.indexOf(comment)}>{comment}</li>
+        ))}
+      </ul>
     </div>
   );
 };
