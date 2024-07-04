@@ -64,7 +64,6 @@ const resolvers = {
     authorCount: () => Author.collection.countDocuments(),
     allBooks: async (root, args) => {
       let response = await Book.find({}).populate("author");
-
       if (args.author)
         response = response.filter((b) => b.author.name === args.author);
       if (args.genre)
@@ -90,11 +89,31 @@ const resolvers = {
       const authorExists = await Author.find({ name: author });
       if (authorExists.length === 0) {
         const newAuthor = new Author({ name: author });
-        await newAuthor.save();
+        try {
+          await newAuthor.save();
+        } catch (error) {
+          throw new GraphQLError("Adding author failed", {
+            extensions: {
+              code: "BAD_USER_INPUT",
+              invalidArgs: author,
+              error,
+            },
+          });
+        }
       }
       const authorObject = await Author.findOne({ name: author });
       const newBook = new Book({ ...args, author: authorObject });
-      await newBook.save();
+      try {
+        await newBook.save();
+      } catch (error) {
+        throw new GraphQLError("Adding book failed", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: { ...args },
+            error,
+          },
+        });
+      }
       return newBook;
     },
     // Not working at this point!
