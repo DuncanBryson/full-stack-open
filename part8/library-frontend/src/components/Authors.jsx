@@ -3,20 +3,13 @@ import { useState } from "react";
 import { ALL_AUTHORS, EDIT_AUTHOR } from "../queries";
 
 const Authors = ({ authors }) => {
-  const [hidden, setHiden] = useState({ display: "none" });
   const [author, setAuthor] = useState(null);
   const [newYear, setNewYear] = useState("");
-
-  const handleChange = (event) => {
-    setHiden({ display: true });
-    setAuthor(event.target.value);
-  };
 
   const [editAuthor] = useMutation(EDIT_AUTHOR, {
     refetchQueries: [{ query: ALL_AUTHORS }],
   });
   const handleSubmit = (event) => {
-    console.log("submitting", author, newYear);
     editAuthor({ variables: { name: author, setBornTo: Number(newYear) } });
   };
 
@@ -35,23 +28,24 @@ const Authors = ({ authors }) => {
               <td>{a.name}</td>
               <td>{a.born}</td>
               <td>{a.bookCount}</td>
-              <td>
-                <button onClick={handleChange} value={a.name}>
-                  Update Author
-                </button>
-              </td>
             </tr>
           ))}
         </tbody>
       </table>
-      <div style={hidden}>
-        <h3>Update birth year for {author}</h3>
+      <div>
+        <h3>Update author</h3>
+        <label htmlFor="Year">Birth Year</label>
         <input
+          id="Year"
           value={newYear}
           onChange={({ target }) => setNewYear(target.value)}
         ></input>
+        <select onChange={({ target }) => setAuthor(target.value)} key="select">
+          {authors.map((a) => (
+            <option key={a.name}>{a.name}</option>
+          ))}
+        </select>
         <button onClick={handleSubmit}>Submit</button>
-        <button>Cancel</button>
       </div>
     </div>
   );
