@@ -1,5 +1,4 @@
 const blogRouter = require("express").Router();
-const { createHtmlTagObject } = require("html-webpack-plugin");
 const Blog = require("../models/blog");
 const { userExtractor, errorHandler } = require("../utils/middleware");
 blogRouter.get("/", async (request, response) => {
