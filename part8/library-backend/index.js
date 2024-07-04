@@ -143,7 +143,7 @@ const resolvers = {
             invalidArgs: args.title,
           },
         });
-      if (!authors.find((a) => a.author === args.author)) {
+      if (!authors.find((a) => a.name === args.author)) {
         authors = authors.concat({ name: args.author, id: uuid() });
       }
       const newBook = { ...args, id: uuid() };
