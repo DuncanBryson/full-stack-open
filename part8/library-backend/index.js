@@ -60,18 +60,19 @@ type Mutation {
 
 const resolvers = {
   Query: {
-    bookCount: () => books.length,
-    authorCount: () => authors.length,
-    allBooks: (root, args) => {
-      let response = books;
+    bookCount: () => Book.collection.countDocuments(),
+    authorCount: () => Author.collection.countDocuments(),
+    allBooks: async (root, args) => {
+      let response = await Book.find({}).populate("author");
+
       if (args.author)
-        response = response.filter((b) => b.author === args.author);
+        response = response.filter((b) => b.author.name === args.author);
       if (args.genre)
         response = response.filter((b) => b.genres.includes(args.genre));
       return response;
     },
-    allAuthors: () => {
-      return authors;
+    allAuthors: async () => {
+      return Author.find({});
     },
   },
   Mutation: {
@@ -96,6 +97,7 @@ const resolvers = {
       await newBook.save();
       return newBook;
     },
+    // Not working at this point!
     editAuthor: (root, args) => {
       const author = Author.find({ name: args.name });
       if (!author) return null;
@@ -105,6 +107,7 @@ const resolvers = {
     },
   },
   Author: {
+    // Not working at this point!!
     bookCount: (root) => books.filter((b) => b.author === root.name).length,
   },
 };
