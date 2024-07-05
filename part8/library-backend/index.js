@@ -65,7 +65,7 @@ type Mutation {
   ): Book
   editAuthor(
     name: String!
-    setBornTo: Int!
+    setBornTo: Int
   ): Author
   createUser(
     username: String!
@@ -145,7 +145,7 @@ const resolvers = {
       if (!currentUser) throw new GraphQLError("Wrong credentials");
       const author = await Author.findOne({ name: args.name });
       if (!author) throw new GraphQLError("Author not found");
-      const updatedAuthor = { ...author._doc, born: args.setBornTo };
+      const updatedAuthor = { ...author._doc, born: args.setBornTo || null };
       await Author.findByIdAndUpdate(author._id, updatedAuthor);
       return updatedAuthor;
     },
