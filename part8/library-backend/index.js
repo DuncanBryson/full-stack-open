@@ -188,8 +188,10 @@ const resolvers = {
     },
   },
   Author: {
-    // Not working at this point!!
-    bookCount: (root) => books.filter((b) => b.author === root.name).length,
+    bookCount: async (root) => {
+      const books = await Book.find({});
+      return books.filter((b) => String(b.author) === String(root._id)).length;
+    },
   },
 };
 
