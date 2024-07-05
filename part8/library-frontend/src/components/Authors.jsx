@@ -2,15 +2,21 @@ import { useMutation } from "@apollo/client";
 import { useState } from "react";
 import { ALL_AUTHORS, EDIT_AUTHOR } from "../queries";
 
-const Authors = ({ authors }) => {
+const Authors = ({ authors, user }) => {
   const [author, setAuthor] = useState(null);
   const [newYear, setNewYear] = useState("");
+  const hidden = user ? { display: true } : { display: "none" };
 
   const [editAuthor] = useMutation(EDIT_AUTHOR, {
     refetchQueries: [{ query: ALL_AUTHORS }],
   });
   const handleSubmit = (event) => {
-    editAuthor({ variables: { name: author, setBornTo: Number(newYear) } });
+    editAuthor({
+      variables: {
+        name: author,
+        setBornTo: newYear.length === 0 ? undefined : Number(newYear),
+      },
+    });
   };
 
   return (
@@ -32,7 +38,7 @@ const Authors = ({ authors }) => {
           ))}
         </tbody>
       </table>
-      <div>
+      <div style={hidden}>
         <h3>Update author</h3>
         <label htmlFor="Year">Birth Year</label>
         <input
