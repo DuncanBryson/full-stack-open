@@ -6,27 +6,32 @@ import { BrowserRouter as Router, Link, Routes, Route } from "react-router-dom";
 import { ALL_AUTHORS, ALL_BOOKS, CURRENT_USER } from "./queries";
 import { useEffect, useState } from "react";
 import LoginForm from "./components/LoginForm";
+import Recommended from "./components/Recommended";
 
 const App = () => {
-  const [user, setUser] = useState(
-    localStorage.getItem("library-user-username")
-  );
   const [token, setToken] = useState(
     localStorage.getItem("library-user-token")
   );
-
+  const [user, setUser] = useState(null);
   const authorsResult = useQuery(ALL_AUTHORS);
   const booksResult = useQuery(ALL_BOOKS);
-  const currentUserResult = useQuery(CURRENT_USER);
+  const currentUserResult = useQuery(CURRENT_USER, {
+    skip: !token,
+  });
   const client = useApolloClient();
+  useEffect(() => {
+    if (currentUserResult.data?.me) {
+      setUser(currentUserResult.data.me);
+    }
+  }, [currentUserResult, token]);
 
   if (authorsResult.loading || booksResult.loading || currentUserResult.loading)
     return null;
   const authors = authorsResult.data.allAuthors;
   const books = booksResult.data.allBooks;
   const handleLogout = () => {
-    setUser(null);
     setToken(null);
+    setUser(null);
     localStorage.clear();
     client.resetStore();
   };
@@ -41,10 +46,15 @@ const App = () => {
             <button>Books</button>
           </Link>
           {user ? (
-            <Link to="/add">
-              <button>Add Book</button>
+            <>
+              <Link to="/add">
+                <button>Add Book</button>
+              </Link>
+              <Link to="/recommended">
+                <button>Recommended</button>
+              </Link>
               <button onClick={handleLogout}>Logout</button>
-            </Link>
+            </>
           ) : (
             <Link to="/login">
               <button>Login</button>
@@ -58,6 +68,10 @@ const App = () => {
           <Route
             path="/login"
             element={<LoginForm {...{ setToken, setUser }} />}
+          />
+          <Route
+            path="/recommended"
+            element={<Recommended {...{ books, user }} />}
           />
         </Routes>
       </div>

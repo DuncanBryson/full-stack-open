@@ -1,13 +1,14 @@
 import { useMutation } from "@apollo/client";
 import { useState, useEffect } from "react";
-import { LOGIN } from "../queries";
+import { CURRENT_USER, LOGIN } from "../queries";
 import { useNavigate } from "react-router-dom";
 
-const LoginForm = ({ setToken, setUser }) => {
+const LoginForm = ({ setToken }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const redirect = useNavigate();
   const [login, result] = useMutation(LOGIN, {
+    refetchQueries: [{ query: CURRENT_USER }],
     onError: (error) => {
       alert(error.graphQLErrors[0].message);
     },
@@ -16,9 +17,7 @@ const LoginForm = ({ setToken, setUser }) => {
     if (result.data) {
       const token = result.data.login.value;
       localStorage.setItem("library-user-token", token);
-      localStorage.setItem("library-user-username", username);
       setToken(token);
-      setUser(username);
       redirect("/");
     }
   }, [result.data]);
