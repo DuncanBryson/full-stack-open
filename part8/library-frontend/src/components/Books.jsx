@@ -1,18 +1,26 @@
+import { useQuery } from "@apollo/client";
 import { useState } from "react";
+import { ALL_BOOKS } from "../queries";
 const Books = ({ books }) => {
-  const [selectedGenre, setSelectedGenre] = useState(false);
+  const [genre, setGenre] = useState();
   const allGenres = [];
+  const bookResults = useQuery(ALL_BOOKS, { variables: { genre } });
+  if (bookResults.loading) return null;
+  const filteredbooks = bookResults.data.allBooks;
+
   books.map((b) =>
     b.genres.map((g) => {
       allGenres.includes(g) ? null : allGenres.push(g);
     })
   );
-  const hidden = selectedGenre ? {} : { display: "none" };
+
+  const hidden = genre ? {} : { display: "none" };
+
   return (
     <div>
       <h2>books</h2>
       <p style={hidden}>
-        In genre <em>{selectedGenre}</em>
+        In genre <em>{genre}</em>
       </p>
       <table>
         <tbody>
@@ -21,8 +29,9 @@ const Books = ({ books }) => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {books.map((b) => {
-            if (selectedGenre && !b.genres.includes(selectedGenre)) return null;
+          {filteredbooks.map((b) => {
+            // previous solution using state instead of a query
+            // if (genre && !b.genres.includes(genre)) return null;
             return (
               <tr key={b.title}>
                 <td>{b.title}</td>
@@ -34,11 +43,11 @@ const Books = ({ books }) => {
         </tbody>
       </table>
       {allGenres.map((g) => (
-        <button key={g} onClick={() => setSelectedGenre(g)}>
+        <button key={g} onClick={() => setGenre(g)}>
           {g}
         </button>
       ))}
-      <button onClick={() => setSelectedGenre(false)}>All Genres</button>
+      <button onClick={() => setGenre()}>All Genres</button>
     </div>
   );
 };

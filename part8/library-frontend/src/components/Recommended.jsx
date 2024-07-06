@@ -1,6 +1,13 @@
-const Recommended = ({ user, books }) => {
+import { useQuery } from "@apollo/client";
+import { ALL_BOOKS } from "../queries";
+
+const Recommended = ({ user }) => {
   if (!user) return null;
   const genre = user.favoriteGenre;
+  const booksResult = useQuery(ALL_BOOKS, { variables: { genre } });
+  if (booksResult.loading) return null;
+  const books = booksResult.data.allBooks;
+
   return (
     <div>
       <h2>Recommendations:</h2>
@@ -15,7 +22,6 @@ const Recommended = ({ user, books }) => {
             <th>published</th>
           </tr>
           {books.map((b) => {
-            if (!b.genres.includes(genre)) return null;
             return (
               <tr key={b.title}>
                 <td>{b.title}</td>

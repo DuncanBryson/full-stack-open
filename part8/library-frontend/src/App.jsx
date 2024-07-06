@@ -9,6 +9,7 @@ import LoginForm from "./components/LoginForm";
 import Recommended from "./components/Recommended";
 
 const App = () => {
+  const client = useApolloClient();
   const [token, setToken] = useState(
     localStorage.getItem("library-user-token")
   );
@@ -18,7 +19,7 @@ const App = () => {
   const currentUserResult = useQuery(CURRENT_USER, {
     skip: !token,
   });
-  const client = useApolloClient();
+
   useEffect(() => {
     if (currentUserResult.data?.me) {
       setUser(currentUserResult.data.me);
