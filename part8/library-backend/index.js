@@ -207,10 +207,15 @@ startStandaloneServer(server, {
   context: async ({ req, res }) => {
     const auth = req ? req.headers.authorization : false;
     if (auth && auth.startsWith("Bearer ")) {
-      const token = req.headers.authorization.replace("Bearer ", "");
-      const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-      const currentUser = await User.findById(decodedToken.id);
-      return { currentUser };
+      try {
+        const token = req.headers.authorization.replace("Bearer ", "");
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+        const currentUser = await User.findById(decodedToken.id);
+        return { currentUser };
+      } catch (error) {
+        if (error.message === "jwt expired") return { currentUser: null };
+        else console.log(error.message);
+      }
     }
   },
 }).then(({ url }) => {
