@@ -14,19 +14,6 @@ const NewBook = () => {
     onError: (error) => {
       console.log(error);
     },
-    update: (cache, response) => {
-      const genres = response.data.addBook.genres;
-      for (const genre of genres) {
-        cache.updateQuery(
-          { query: ALL_BOOKS, variables: { genre } },
-          ({ allBooks }) => {
-            return {
-              allBooks: allBooks.concat(response.data.addBook),
-            };
-          }
-        );
-      }
-    },
   });
 
   const submit = (event) => {

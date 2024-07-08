@@ -1,9 +1,9 @@
-import { useApolloClient, useQuery } from "@apollo/client";
+import { useApolloClient, useQuery, useSubscription } from "@apollo/client";
 import Authors from "./components/Authors";
 import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import { BrowserRouter as Router, Link, Routes, Route } from "react-router-dom";
-import { ALL_AUTHORS, ALL_BOOKS, CURRENT_USER } from "./queries";
+import { ALL_AUTHORS, ALL_BOOKS, BOOK_ADDED, CURRENT_USER } from "./queries";
 import { useEffect, useState } from "react";
 import LoginForm from "./components/LoginForm";
 import Recommended from "./components/Recommended";
@@ -25,6 +25,13 @@ const App = () => {
       setUser(currentUserResult.data.me);
     }
   }, [currentUserResult, token]);
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data, client }) => {
+      const newBook = data.data.bookAdded;
+      console.log(newBook);
+      alert(`Book added: ${newBook.title} by ${newBook.author.name}`);
+    },
+  });
 
   if (authorsResult.loading || booksResult.loading || currentUserResult.loading)
     return null;
