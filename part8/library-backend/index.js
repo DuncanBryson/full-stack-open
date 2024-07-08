@@ -78,8 +78,8 @@ const start = async () => {
             const currentUser = await User.findById(decodedToken.id);
             return { currentUser };
           } catch (error) {
-            if (error.message === "jwt expired") return { currentUser: null };
-            else console.log(error.message);
+            if (error.message !== "jwt expired") console.log(error.message);
+            return { currentUser: null };
           }
         }
       },
