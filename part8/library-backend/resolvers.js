@@ -122,9 +122,8 @@ const resolvers = {
     },
   },
   Author: {
-    bookCount: async (root) => {
-      const books = await Book.find({});
-      return books.filter((b) => String(b.author) === String(root._id)).length;
+    bookCount: async (root, args, { loaders }) => {
+      return loaders.bookCount.load(root._id);
     },
   },
   Subscription: {

@@ -1,24 +1,24 @@
 const { ApolloServer } = require("@apollo/server");
 const { WebSocketServer } = require("ws");
 const { useServer } = require("graphql-ws/lib/use/ws");
-
 const { expressMiddleware } = require("@apollo/server/express4");
 const {
   ApolloServerPluginDrainHttpServer,
 } = require("@apollo/server/plugin/drainHttpServer");
 const { makeExecutableSchema } = require("@graphql-tools/schema");
+
 const express = require("express");
 const cors = require("cors");
 const http = require("http");
-
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
-
-const User = require("./models/user");
 require("dotenv").config();
 
 const resolvers = require("./resolvers");
 const typeDefs = require("./schema");
+const User = require("./models/user");
+const loaders = require("./loaders");
+const DataLoader = require("dataloader");
 
 const MONGODB_URI = process.env.MONGODB_URI;
 console.log("Connecting to MongoDB");
@@ -32,10 +32,6 @@ mongoose
     console.log("error connection to MongoDB:", error.message);
   });
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-});
 const start = async () => {
   const app = express();
   const httpServer = http.createServer(app);
@@ -70,18 +66,25 @@ const start = async () => {
     express.json(),
     expressMiddleware(server, {
       context: async ({ req, res }) => {
+        let currentUser = null;
         const auth = req ? req.headers.authorization : false;
         if (auth && auth.startsWith("Bearer ")) {
           try {
             const token = req.headers.authorization.replace("Bearer ", "");
             const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-            const currentUser = await User.findById(decodedToken.id);
-            return { currentUser };
+            currentUser = await User.findById(decodedToken.id);
           } catch (error) {
             if (error.message !== "jwt expired") console.log(error.message);
-            return { currentUser: null };
           }
         }
+        return {
+          currentUser,
+          loaders: {
+            bookCount: new DataLoader((AuthorId) =>
+              loaders.bookLoader(AuthorId)
+            ),
+          },
+        };
       },
     })
   );
