@@ -28,8 +28,19 @@ const App = () => {
   useSubscription(BOOK_ADDED, {
     onData: ({ data, client }) => {
       const newBook = data.data.bookAdded;
-      console.log(newBook);
       alert(`Book added: ${newBook.title} by ${newBook.author.name}`);
+      const genres = newBook.genres;
+      for (const genre of genres) {
+        client.cache.updateQuery(
+          { query: ALL_BOOKS, variables: { genre } },
+          ({ allBooks }) => {
+            return {
+              allBooks: allBooks.concat(newBook),
+            };
+          }
+        );
+      }
+      client.refetchQueries({ include: [ALL_AUTHORS, ALL_BOOKS] });
     },
   });
 
