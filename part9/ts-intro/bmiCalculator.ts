@@ -11,4 +11,20 @@ const calculateBmi = (height: number, weight: number): string => {
   return "normal";
 };
 
-console.log(calculateBmi(180, 74));
+const inputHandler = (args: string[]): { height: number; weight: number } => {
+  if (args.length < 4) throw new Error("Missing inputs, try again");
+  if (args.length > 4) throw new Error("Too many inputs, try again");
+  const height = Number(args[2]);
+  const weight = Number(args[3]);
+  if (isNaN(height) || isNaN(weight))
+    throw new Error("Invalid inputs, must enter numbers for height and weight");
+  return { height, weight };
+};
+try {
+  const { height, weight } = inputHandler(process.argv);
+  console.log(calculateBmi(height, weight));
+} catch (error: unknown) {
+  let errorMessage = "Something went wrong: ";
+  if (error instanceof Error) errorMessage += error.message;
+  console.error(errorMessage);
+}

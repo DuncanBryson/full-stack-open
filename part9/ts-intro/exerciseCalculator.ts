@@ -35,4 +35,24 @@ const exerciseCalculator = (
     average,
   };
 };
-console.log(exerciseCalculator([3, 0, 2, 4.5, 0, 3, 1], 2));
+
+const processInputs = (args: string[]): { log: number[]; target: number } => {
+  if (args.length < 4) throw new Error("Missing inputs, try again");
+  const target = Number(args[2]);
+  const log = args.slice(3).map((n) => {
+    const number = Number(n);
+    if (isNaN(number))
+      throw new Error("Invalid input, training hours must be a number");
+    return number;
+  });
+  return { log, target };
+};
+
+try {
+  const { log, target } = processInputs(process.argv);
+  console.log(exerciseCalculator(log, target));
+} catch (error: unknown) {
+  let errorMessage = "Something went wrong: ";
+  if (error instanceof Error) errorMessage += error.message;
+  console.error(errorMessage);
+}
