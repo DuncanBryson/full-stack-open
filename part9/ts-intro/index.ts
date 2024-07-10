@@ -1,7 +1,9 @@
 import express from "express";
 import { calculateBmi } from "./bmiCalculator";
+import { DailyExercises, exerciseCalculator } from "./exerciseCalculator";
 
 const app = express();
+app.use(express.json());
 
 app.get("/hello", (_req, res) => {
   res.send("Hello full stack!");
@@ -17,6 +19,28 @@ app.get("/bmi", (req, res) => {
       weight,
       bmi: calculateBmi(Number(height), Number(weight)),
     });
+  } catch (error: unknown) {
+    if (error instanceof Error) res.send({ error: error.message });
+  }
+});
+
+app.post("/exercises", (req, res) => {
+  const checkIfNumber = (item: unknown) => !isNaN(Number(item));
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const { daily_exercises, target } = req.body;
+
+    if (!daily_exercises || !target) throw new Error("Missing Parameters");
+    if (
+      !Array.isArray(daily_exercises) ||
+      daily_exercises.every((e: unknown) => !checkIfNumber(e)) ||
+      !daily_exercises.every((e) => checkIfNumber(e)) ||
+      !checkIfNumber(target)
+    )
+      throw new Error("Malformatted Paramaters");
+
+    const exercises = daily_exercises as DailyExercises;
+    res.send(exerciseCalculator(exercises, Number(target)));
   } catch (error: unknown) {
     if (error instanceof Error) res.send({ error: error.message });
   }

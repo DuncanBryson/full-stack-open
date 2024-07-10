@@ -7,7 +7,9 @@ interface CalculateExercises {
   target: number;
   average: number;
 }
-const exerciseCalculator = (
+
+export type DailyExercises = [number];
+export const exerciseCalculator = (
   args: number[],
   target: number
 ): CalculateExercises => {
